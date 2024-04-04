@@ -1,0 +1,34 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+.main-header {
+    background-color: #333;
+    color: #fff;
+    padding: 10px 0;
+    text-align: center;
+}
+.main-header-nav {
+    display: flex;
+    justify-content: center;
+}
+.main-header-nav-list {
+    display: flex;
+    list-style: none;
+    padding: 0;
+}
+.main-header-item {
+    margin: 0 10px;
+}
+.main-header-item a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.main-header-item a:hover, .main-header-item a:active, .main-header-item a.active {
+    color: rgb(255, 174, 0);
+}
+main {
+    padding: 20px;
+}
