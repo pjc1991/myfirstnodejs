@@ -5,9 +5,10 @@ const cartController = require('../controllers/cart');
 const ordersController = require('../controllers/orders');
 
 router.get('/', productsController.getProducts);
+router.get('/product/:productId', productsController.getProduct);
 router.get('/cart', cartController.getCart);
 router.post('/cart', cartController.postCart);
-router.delete('/cart', cartController.postCartDeleteProduct);
+router.post('/cart-delete', cartController.postCartDeleteProduct);
 router.get('/order', ordersController.getOrders);
 router.post('/order', ordersController.postOrder);
 

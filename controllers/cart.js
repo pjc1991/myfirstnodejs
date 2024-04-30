@@ -13,7 +13,7 @@ exports.getCart = (req, res, next) => {
 }
 
 exports.postCart = (req, res, next) => {
-    Product.fetch(req.body.productId, (product) => {
+    Product.fetchById(req.body.productId, (product) => {
         const cart = new Cart({
             product: product,
             quantity: req.body.quantity
@@ -24,7 +24,8 @@ exports.postCart = (req, res, next) => {
 }
 
 exports.postCartDeleteProduct = (req, res, next) => {
-    Cart.deleteAll(req.user, () => {
-        res.redirect('/cart');
+    Cart.deleteAll(req.body.userId, () => {
+        
     });
+    res.redirect('/cart');
 }

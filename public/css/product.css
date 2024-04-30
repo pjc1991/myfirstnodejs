@@ -25,3 +25,28 @@
 .add-product-form-button:hover {
     background-color: #0056b3;
 }
+
+form.form-control {
+    width: 300px;
+    height: 30px;
+    margin-bottom: 20px;
+    padding: 5px;
+    font-size: 16px;
+}
+
+.form-control input {
+    width: 300px;
+    height: 30px;
+    margin-bottom: 20px;
+    padding: 5px;
+    font-size: 16px;
+}
+
+.form-control button {
+    width: 300px;
+    height: 30px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+}

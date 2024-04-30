@@ -1,0 +1,24 @@
+<%- include('includes/header.ejs') %>
+    <link rel="stylesheet" href="/css/product.css">
+</head>
+
+<body>
+    <%- include('includes/navigation.ejs') %>
+    <main>
+        <div class="product-detail">
+            <div class="product-detail__image">
+                <img src="<%= product.imageUrl %>" alt="<%= product.title %>">
+            </div>
+            <div class="product-detail__content">
+                <h1><%= product.title %></h1>
+                <p><%= product.description %></p>
+                <p>$<%= product.price %></p>
+                <%- include('includes/add-to-cart-button.ejs'), {product: product} %>
+            </div>
+        </div>
+        <div class="back-link">
+            <a href="/" class="back-link__button">Back to Shop</a>
+        </div>
+    </main>
+
+<%- include('includes/footer.ejs') %>

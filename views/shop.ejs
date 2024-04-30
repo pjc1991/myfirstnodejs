@@ -18,6 +18,9 @@
                             <h2 class="card-content-price">$<%= product.price %></h2>
                             <p class="card-content-description"><%= product.description %></p>
                         </div>
+                        <div class="card-actions">
+                            <a href="/product/<%= product.id %>" class="card-actions-button">View</a>
+                        </div>
                         <footer class="card-footer">
                             <form action="/cart" method="POST">
                                 <input type="hidden" name="productId" value="<%= product.id %>">

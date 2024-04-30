@@ -1,5 +1,5 @@
 <%- include('includes/header.ejs') %>
-
+<link rel="stylesheet" href="/css/product.css">
     </head>
 
     <body>
@@ -26,7 +26,7 @@
                                     </p>
                                 </div>
                                 <footer class="card-footer">
-                                    <form action="/cart" method="POST">
+                                    <form action="/cart-delete" method="POST" class="form-control">
                                         <input type="hidden" name="productId" value="<%= item.product._id %>">
                                         <button class="card-footer-button" type="submit">Remove from Cart</button>
                                     </form>
@@ -40,7 +40,7 @@
                         </h1>
                     </div>
 
-                    <form action="/order" method="POST">
+                    <form action="/order" method="POST" class="form-control">
                         <button class="order-button" type="submit">Order Now</button>
                     </form>
 

@@ -27,3 +27,13 @@ exports.getProducts = (req, res, next) => {
         })
     });
 };
+
+exports.getProduct = (req, res, next) => {
+    Product.fetchById(req.params.productId, (product) => {
+        res.render('product-detail', {
+            product: product,
+            pageTitle: product.title,
+            path: '/product/:productId',
+        });
+    });
+};
