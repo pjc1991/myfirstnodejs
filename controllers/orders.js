@@ -1,32 +1,45 @@
 const Order = require('../models/order');
-const Cart = require('../models/cart');
 
 exports.getOrders = (req, res, next) => {
-    Order.fetchAll((orders) => {
-        res.render('order', {
-            orders: orders,
-            pageTitle: 'Orders',
-            path: '/order',
+    req.user.getOrders({ include: ['products'] })
+        .then(orders => {
+            
+            res.render('order', {
+                orders: orders,
+                pageTitle: 'Orders',
+                path: '/order',
+            });
+        })
+        .catch(err => {
+            console.log(err);
         });
-    });
 }
 
 exports.postOrder = (req, res, next) => {
-    Cart.fetchAll((cart) => {
-        const orderItems = cart.map(item => {
-            return {
-                product: item.product,
-                quantity: item.quantity
-            }
+    let fetchedProducts;
+    let fetchedCart;
+    req.user.getCart()
+        .then(cart => {
+            fetchedCart = cart;
+            return cart.getProducts();
+        })
+        .then(products => {
+            fetchedProducts = products;
+            return req.user.createOrder();
+        })
+        .then(order => {
+            return order.addProducts(fetchedProducts.map(product => {
+                product.orderItem = { 
+                    quantity: product.cartItem.quantity,
+                    price: product.price
+                };
+                return product;
+            }));
+        })
+        .then(result => {
+            return fetchedCart.setProducts(null);
+        })
+        .then(result => {
+            res.redirect('/order');
         });
-        const order = new Order({
-            orderItems: orderItems,
-            user: req.user
-        });
-        order.save();
-    })
-    Cart.deleteAll(req.user, () => {
-        return res.redirect('/order');
-    });
-    res.redirect('/order');
 }

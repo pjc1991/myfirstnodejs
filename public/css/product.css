@@ -128,3 +128,31 @@ form.form-control {
     border-radius: 5px;
     margin-top: 1rem;
 }
+
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border: 1px solid #ccc;
+    margin: 1rem 0;
+    width: 66%;
+    margin: auto;
+}
+
+.cart-item-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+.cart-item-quantity {
+    font-size: 1rem;
+}
+
+.cart-item-delete {
+    background-color: #ff523b;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+}

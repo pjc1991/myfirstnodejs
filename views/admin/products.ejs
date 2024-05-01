@@ -1,0 +1,40 @@
+<%- include('../includes/header.ejs') %>
+<link rel="stylesheet" href="/css/shop.css">
+</head>
+
+<body>
+    <%- include('../includes/navigation.ejs') %>
+    <main>
+        <% if (products.length > 0) { %>
+            <div class="grid">
+                <% for (let product of products) { %>
+                    <article class="card">
+                        <header class="card-header">
+                            <h1 class="card-header-title"><%= product.title %></h1>
+                        </header>
+                        <div class="card-image">
+                            <img src="<%= product.imageUrl %>" alt="<%= product.title %>">
+                        </div>
+                        <div class="card-content">
+                            <h2 class="card-content-price">$<%= product.price %></h2>
+                            <p class="card-content-description"><%= product.description %></p>
+                        </div>
+
+                        <footer class="card-footer">
+                            <div class="card-actions">
+                                <a href="/admin/product/<%= product.id %>" class="card-actions-button">Edit</a>
+                            </div>
+                            <form action="/admin/product/delete-product" method="POST">
+                                <input type="hidden" name="productId" value="<%= product.id %>">
+                                <button class="card-footer-button" type="submit">Delete</button>
+                            </form>
+                        </footer>
+                    </article>
+                <% } %>
+            </div>
+        <% } else { %>
+            <h1>No products found.</h1>
+        <% } %>
+    </main>
+
+<%- include('../includes/footer.ejs') %>
