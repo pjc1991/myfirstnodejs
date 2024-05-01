@@ -19,6 +19,10 @@ app.use('/', shopRoutes);
 
 app.use(errorsController.getNotFound);
 
-sequelize.sync();
-
-app.listen(3000);
+sequelize.sync().then(result => {
+    // console.log(result);
+    app.listen(3000);
+}
+).catch(err => {
+    console.log(err);
+});
