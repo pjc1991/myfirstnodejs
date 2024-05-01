@@ -1,3 +1,4 @@
 {
-    "legacyWatch" : true
+    "legacyWatch" : true,
+    "ext" : "js, css, ejs"
 }
