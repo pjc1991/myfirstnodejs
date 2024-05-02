@@ -1,9 +1,10 @@
 <%- include('includes/header.ejs') %>
     <link rel="stylesheet" href="/css/product.css">
     </head>
-<style>
-    
-</style>
+    <style>
+
+    </style>
+
     <body>
         <%- include('includes/navigation.ejs') %>
             <main>
@@ -15,21 +16,15 @@
                                     <%= item.title %>
                                 </span>
                                 <span class="cart-item-quantity">
-                                    Quantity: <%= item.cartItem.quantity %>
+                                    Quantity: <%= item.quantity %>
                                 </span>
                                 <form action="/cart-delete" method="POST" class="">
-                                    <input type="hidden" name="productId" value="<%= item.id %>">
+                                    <input type="hidden" name="productId" value="<%= item._id %>">
                                     <button class="cart-item-delete" type="submit">Remove from Cart</button>
                                 </form>
                             </div>
                             <% } %>
                     </div>
-
-                    <div class="total">
-                        <h1>Total: $<%= total %>
-                        </h1>
-                    </div>
-
                     <form action="/order" method="POST" class="form-control">
                         <button class="order-button" type="submit">Order Now</button>
                     </form>

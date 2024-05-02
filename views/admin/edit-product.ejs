@@ -10,6 +10,9 @@
             <input type="text" name="imageUrl" id="imageUrl" placeholder="Image URL" class="add-product-form-input" value="<%= mode === 'edit' ? product.imageUrl : '' %>">
             <input type="text" name="price" id="price" placeholder="Price" class="add-product-form-input" value="<%= mode === 'edit' ? product.price : '' %>">
             <textarea name="description" id="description" placeholder="Description" class="add-product-form-input"><%= mode === 'edit' ? product.description : '' %></textarea>
+            <% if (mode === 'edit') { %>
+                <input type="hidden" name="productId" value="<%= product._id %>">
+            <% } %>
             <button type="submit" class="add-product-form-button">Save Product</button>
         </form>
     </main>

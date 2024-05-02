@@ -22,10 +22,10 @@
 
                         <footer class="card-footer">
                             <div class="card-actions">
-                                <a href="/admin/product/<%= product.id %>" class="card-actions-button">Edit</a>
+                                <a href="/admin/product/<%= product._id %>" class="card-actions-button">Edit</a>
                             </div>
                             <form action="/admin/product/delete-product" method="POST">
-                                <input type="hidden" name="productId" value="<%= product.id %>">
+                                <input type="hidden" name="productId" value="<%= product._id %>">
                                 <button class="card-footer-button" type="submit">Delete</button>
                             </form>
                         </footer>

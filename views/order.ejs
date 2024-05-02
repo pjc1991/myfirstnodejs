@@ -1,6 +1,6 @@
 <%- include('includes/header.ejs') %>
+    <link rel="stylesheet" href="/css/order.css">
     </head>
-
     <body>
         <%- include('includes/navigation.ejs') %>
             <main>
@@ -9,17 +9,17 @@
                         <% for (let order of orders) { %>
                             <article class="card">
                                 <div class="card__content">
-                                    <h1>Order ID: <%= order.id %>
+                                    <h1>Order ID: <%= order._id %>
                                     </h1>
                                 </div>
-                                <% for (let product of order.products) { %>
+                                <% for (let product of order.items) { %>
                                     <div class="card__content">
                                         <h2>
                                             <%= product.title %>
                                         </h2>
-                                        <p>Quantity: <%= product.orderItem.quantity %>
+                                        <p>Quantity: <%= product.quantity %>
                                         </p>
-                                        <p>Price: $<%= product.orderItem.price %>
+                                        <p>Price: $<%= product.price %>
                                         </p>
                                     </div>
                                     <% } %>
