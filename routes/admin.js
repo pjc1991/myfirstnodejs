@@ -4,8 +4,6 @@ const adminController = require('../controllers/admin');
 
 const router = express.Router();
 
-const products = [];
-
 router.get('/product', adminController.getProducts);
 
 router.get('/product/add-product', adminController.getAddProduct);

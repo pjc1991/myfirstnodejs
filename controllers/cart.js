@@ -3,10 +3,10 @@ const User = require('../models/user');
 
 exports.getCart = (req, res, next) => {
     req.user
-        .getCart()
-        .then(products => {
+        .populate('cart.items.productId')
+        .then(user => {
             res.render('cart', {
-                products: products,
+                products: user.cart.items,
                 pageTitle: 'Cart',
                 path: '/cart',
             });
@@ -32,7 +32,7 @@ exports.postCart = (req, res, next) => {
 
 exports.postCartDeleteProduct = (req, res, next) => {
     const productId = req.body.productId;
-    req.user.deleteItemFromCart(productId)
+    req.user.removeFromCart(productId)
         .then(result => {
             res.redirect('/cart');
         })

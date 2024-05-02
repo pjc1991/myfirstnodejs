@@ -2,14 +2,14 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
+const mongoose = require('mongoose');
 const app = express();
+const User = require('./models/user');
 
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 const errorsController = require('./controllers/errors');
-const mongoConnect = require('./util/database').mongoConnect;
 
-const User = require('./models/user');
 
 // EXPRESS CONFIG
 app.set('view engine', 'ejs');
@@ -24,9 +24,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // User middleware to add user to request (for testing purposes only)
 app.use((req, res, next) => {
-    User.findById('66335938bb6b9f634a6aa95f')
+    User
+        .findOne()
         .then(user => {
-            req.user = new User(user);
+            req.user = user;
             next();
         })
         .catch(err => {
@@ -41,25 +42,26 @@ app.use('/', shopRoutes);
 app.use(errorsController.getNotFound);
 
 // DATABASE CONNECTION
-mongoConnect(() => {
-    User.fetchAll()
-        .then(users => {
-            if (users.length === 0) {
+mongoose
+    .connect('mongodb://mongo:27017/shop?retryWrites=true')
+    .then(result => {
+
+        User.findOne().then(user => {
+            if (!user) {
                 const user = new User({
                     name: 'pjc1991',
                     email: 'test@test.com',
+                    cart: {
+                        items: []
+                    }
                 });
 
-                user.save()
-                    .then(result => {
-                        console.log('User created!');
-                    })
-                    .catch(err => {
-                        console.log(err);
-                    });
+                user.save();
             }
-        }).catch(err => {
-            console.log(err);
-        });
-    app.listen(3000);
-});
+        })
+
+        app.listen(3000);
+    })
+    .catch(err => {
+        console.log(err);
+    });

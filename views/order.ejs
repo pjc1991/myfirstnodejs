@@ -12,14 +12,14 @@
                                     <h1>Order ID: <%= order._id %>
                                     </h1>
                                 </div>
-                                <% for (let product of order.items) { %>
+                                <% for (let p of order.products) { %>
                                     <div class="card__content">
                                         <h2>
-                                            <%= product.title %>
+                                            <%= p.product.title %>
                                         </h2>
-                                        <p>Quantity: <%= product.quantity %>
+                                        <p>Quantity: <%= p.quantity %>
                                         </p>
-                                        <p>Price: $<%= product.price %>
+                                        <p>Price: $<%= p.product.price %>
                                         </p>
                                     </div>
                                     <% } %>
