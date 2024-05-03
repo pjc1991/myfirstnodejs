@@ -5,11 +5,11 @@ const Schema = mongoose.Schema;
 const Order = require('./order');
 
 const userSchema = new Schema({
-    name: {
-        type: String,
-        required: true
-    },
     email: {
+        type: String,
+        require: true
+    },
+    password: {
         type: String,
         require: true
     },

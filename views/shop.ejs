@@ -24,10 +24,9 @@
                             <div class="card-actions">
                                 <a href="/product/<%= product._id %>" class="card-actions-button">View</a>
                             </div>
-                            <form action="/cart" method="POST">
-                                <input type="hidden" name="productId" value="<%= product._id %>">
-                                <button class="card-footer-button" type="submit">Add to Cart</button>
-                            </form>
+                            <% if (isAuthenticated) { %>
+                                    <%- include('includes/add-to-cart-button.ejs', {product: product}) %>
+                            <% } %>
                         </footer>
                     </article>
                 <% } %>

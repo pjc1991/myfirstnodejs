@@ -2,10 +2,26 @@
     <nav class="main-header-nav">
         <ul class="main-header-nav-list">
             <li class="main-header-item"><a class="<%= path === '/' ? 'active' : '' %>" href="/">Shop</a></li>
-            <li class="main-header-item"><a class="<%= path === '/cart' ? 'active' : '' %>" href="/cart">Cart</a></li>
-            <li class="main-header-item"><a class="<%= path === '/order' ? 'active' : '' %>" href="/order">Orders</a></li>
-            <li class="main-header-item"><a class="<%= path === '/admin/product' ? 'active' : '' %>" href="/admin/product">Products</a></li>
-            <li class="main-header-item"><a class="<%= path === '/admin/product/add-product' ? 'active' : '' %>" href="/admin/product/add-product">Add Product</a></li>
+                <% if (isAuthenticated) { %>
+                <li class="main-header-item"><a class="<%= path === '/cart' ? 'active' : '' %>" href="/cart">Cart</a></li>
+                <li class="main-header-item"><a class="<%= path === '/order' ? 'active' : '' %>" href="/order">Orders</a></li>
+                <li class="main-header-item"><a class="<%= path === '/admin/product' ? 'active' : '' %>" href="/admin/product">Products</a></li>
+                <li class="main-header-item"><a class="<%= path === '/admin/product/add-product' ? 'active' : '' %>" href="/admin/product/add-product">Add Product</a></li>
+            <% } %>
+        </ul>
+        <ul class="main-header-nav-list">
+            <% if (!isAuthenticated) { %>
+                <li class="main-header-item"><a class="<%= path === '/login' ? 'active' : '' %>" href="/login">Login</a></li>
+                <li class="main-header-item"><a class="<%= path === '/signup' ? 'active' : '' %>" href="/signup">Signup</a></li>
+            <% } %>
+            <% if (isAuthenticated) { %>
+                <li class="main-header-item">
+                    <form action="/logout" method="POST">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                        <button type="submit" class="logout-button">Logout</button>
+                    </form>
+                </li>
+            <% } %>
         </ul>
     </nav>
 </header>

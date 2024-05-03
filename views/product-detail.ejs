@@ -13,7 +13,9 @@
                 <h1><%= product.title %></h1>
                 <p><%= product.description %></p>
                 <p>$<%= product.price %></p>
-                <%- include('includes/add-to-cart-button.ejs'), {product: product} %>
+                <% if (isAuthenticated) { %>
+                    <%- include('includes/add-to-cart-button.ejs'), {product: product} %>
+                <% } %>
             </div>
         </div>
         <div class="back-link">

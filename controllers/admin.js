@@ -7,7 +7,7 @@ exports.getProducts = (req, res, next) => {
             res.render('admin/products', {
                 products: products,
                 pageTitle: 'Admin Products',
-                path: '/admin/products',
+                path: '/admin/product',
             });
         })
         .catch(err => {
