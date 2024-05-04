@@ -10,7 +10,7 @@ const { doubleCsrf } = require('csrf-csrf');
 
 const User = require('./models/user');
 
-const adminRoutes = require('./admin/routes');
+const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 const authRoutes = require('./routes/auth');
 const errorsController = require('./controllers/errors');
