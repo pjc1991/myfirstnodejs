@@ -2,9 +2,9 @@
     <link rel="stylesheet" href="/css/product.css">
 </head>
 
-<body>
+<body class="bg-gray-100">
     <%- include('../includes/navigation.ejs') %>
-    <main>
+    <main class="container mx-auto px-4">
         <form action="" method="post" class="max-w-md mx-auto bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 mt-4">
             <input type="hidden" name="_csrf" value="<%= csrfToken %>">
             <input type="text" name="title" id="title" placeholder="Title" class="w-full mb-4 p-2 border border-gray-300 rounded" value="<%= mode === 'edit' ? product.title : '' %>">
