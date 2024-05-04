@@ -11,8 +11,8 @@ const { doubleCsrf } = require('csrf-csrf');
 const User = require('./models/user');
 
 const adminRoutes = require('./admin/routes');
-const shopRoutes = require('./shop/routes');
-const authRoutes = require('./auth/routes');
+const shopRoutes = require('./routes/shop');
+const authRoutes = require('./routes/auth');
 const errorsController = require('./controllers/errors');
 
 // constants
