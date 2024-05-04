@@ -1,0 +1,28 @@
+    <!-- Modal -->
+    <div id="modal" class="fixed inset-0 z-10 hidden items-center justify-center bg-gray-800 bg-opacity-50">
+        <div class="fixed inset-0 flex items-center justify-center">
+            <div class="p-4 bg-white rounded-md shadow-md">
+
+                <div class="flex justify-between">
+                    <h2 class="text-lg font-semibold">Error</h2>
+                    <button id="close-modal" class="text-gray-500">&times;</button>
+                </div>
+                <p id="modal-message" class="mt-2 text-red-500">
+                    <%= message %>
+                </p>
+            </div>
+        </div>
+    </div>
+    <script>
+        const modal = document.getElementById('modal');
+        const closeModal = document.getElementById('close-modal');
+        const errorMessage = '<%= message %>';
+
+        if (errorMessage) {
+            modal.classList.remove('hidden');
+        }
+
+        closeModal.addEventListener('click', () => {
+            modal.classList.add('hidden');
+        });
+    </script>

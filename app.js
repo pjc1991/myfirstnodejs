@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 const MongoStore = require('connect-mongo');
 const cookieParser = require('cookie-parser');
 const { doubleCsrf } = require('csrf-csrf');
+const flash = require('connect-flash');
 
 const User = require('./models/user');
 
@@ -47,7 +48,6 @@ app.use(session({
 
 }));
 app.use(cookieParser('cookie-secret-key'));
-
 const { 
     generatedToken,
     doubleCsrfProtection
@@ -60,10 +60,9 @@ const {
         sameSite: 'strict'
     },
     getTokenFromRequest: req => req.body._csrf
-
 });
-
 app.use(doubleCsrfProtection);
+app.use(flash());
 
 app.use((req, res, next) => {
     const csrfToken = req.csrfToken();
