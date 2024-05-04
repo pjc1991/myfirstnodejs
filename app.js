@@ -63,12 +63,6 @@ const {
 
 });
 
-app.use( (req, res, next) => {
-    console.log(req.headers);
-    console.log(req.headers['x-csrf-token']);
-    next();
-})
-
 app.use(doubleCsrfProtection);
 
 app.use((req, res, next) => {
