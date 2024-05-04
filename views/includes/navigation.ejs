@@ -9,7 +9,7 @@
                 <li><a href="/admin/product/add-product" class="<% if (path === '/admin/product/add-product') { %> text-orange-500 font-bold <% } %>">Add Product</a></li>
             <% } %>
         </ul>
-        <ul class="flex space-x-4">
+        <ul class="flex space-x-4 text-white">
             <% if (!isAuthenticated) { %>
                 <li><a href="/login" class="<% if (path === '/login') { %> text-orange-500 font-bold <% } %>">Login</a></li>
                 <li><a href="/signup" class="<% if (path === '/signup') { %> text-orange-500 font-bold <% } %>">Signup</a></li>
