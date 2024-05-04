@@ -37,3 +37,6 @@ Thumbs.db
 
 # User generated files
 /data
+
+# Tailwind CSS
+public/css/style.css
