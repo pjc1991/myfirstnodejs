@@ -12,6 +12,7 @@ services:
     depends_on:
       - db
       - mongo
+    tty: true
     
   db:
     image: postgres

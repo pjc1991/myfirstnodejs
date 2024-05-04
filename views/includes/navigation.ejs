@@ -1,27 +1,27 @@
-<header class="main-header">
-    <nav class="main-header-nav">
-        <ul class="main-header-nav-list">
-            <li class="main-header-item"><a class="<%= path === '/' ? 'active' : '' %>" href="/">Shop</a></li>
-                <% if (isAuthenticated) { %>
-                <li class="main-header-item"><a class="<%= path === '/cart' ? 'active' : '' %>" href="/cart">Cart</a></li>
-                <li class="main-header-item"><a class="<%= path === '/order' ? 'active' : '' %>" href="/order">Orders</a></li>
-                <li class="main-header-item"><a class="<%= path === '/admin/product' ? 'active' : '' %>" href="/admin/product">Products</a></li>
-                <li class="main-header-item"><a class="<%= path === '/admin/product/add-product' ? 'active' : '' %>" href="/admin/product/add-product">Add Product</a></li>
+<div class="flex items-center justify-between px-4 py-3 bg-gray-700">
+    <nav class="flex space-x-4 justify-between w-full">
+        <ul class="flex space-x-4">
+            <li><a href="/" class="text-white">Shop</a></li>
+            <% if (isAuthenticated) { %>
+                <li><a href="/cart" class="text-white">Cart</a></li>
+                <li><a href="/order" class="text-white">Orders</a></li>
+                <li><a href="/admin/product" class="text-white">Products</a></li>
+                <li><a href="/admin/product/add-product" class="text-white">Add Product</a></li>
             <% } %>
         </ul>
-        <ul class="main-header-nav-list">
+        <ul class="flex space-x-4">
             <% if (!isAuthenticated) { %>
-                <li class="main-header-item"><a class="<%= path === '/login' ? 'active' : '' %>" href="/login">Login</a></li>
-                <li class="main-header-item"><a class="<%= path === '/signup' ? 'active' : '' %>" href="/signup">Signup</a></li>
+                <li><a href="/login" class="text-white">Login</a></li>
+                <li><a href="/signup" class="text-white">Signup</a></li>
             <% } %>
             <% if (isAuthenticated) { %>
-                <li class="main-header-item">
+                <li>
                     <form action="/logout" method="POST">
                         <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                        <button type="submit" class="logout-button">Logout</button>
+                        <button type="submit" class="text-white">Logout</button>
                     </form>
                 </li>
             <% } %>
         </ul>
     </nav>
-</header>
+</div>

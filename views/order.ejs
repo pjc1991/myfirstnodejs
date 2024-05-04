@@ -1,34 +1,29 @@
 <%- include('includes/header.ejs') %>
-    <link rel="stylesheet" href="/css/order.css">
-    </head>
-    <body>
-        <%- include('includes/navigation.ejs') %>
-            <main>
-                <% if (orders.length> 0) { %>
-                    <div class="grid">
-                        <% for (let order of orders) { %>
-                            <article class="card">
-                                <div class="card__content">
-                                    <h1>Order ID: <%= order._id %>
-                                    </h1>
-                                </div>
-                                <% for (let p of order.products) { %>
-                                    <div class="card__content">
-                                        <h2>
-                                            <%= p.product.title %>
-                                        </h2>
-                                        <p>Quantity: <%= p.quantity %>
-                                        </p>
-                                        <p>Price: $<%= p.product.price %>
-                                        </p>
-                                    </div>
-                                    <% } %>
-                            </article>
-                            <% } %>
-                    </div>
-                    <% } else { %>
-                        <h1>No Orders found.</h1>
-                        <% } %>
-            </main>
+<link rel="stylesheet" href="/css/order.css">
+</head>
+<body>
+    <%- include('includes/navigation.ejs') %>
+    <main>
+        <% if (orders.length > 0) { %>
+        <div class="grid grid-cols-1 gap-4">
+            <% for (let order of orders) { %>
+            <article class="bg-white shadow-lg p-4">
+                <div class="mb-4">
+                    <h1 class="text-xl font-bold">Order ID: <%= order._id %></h1>
+                </div>
+                <% for (let p of order.products) { %>
+                <div class="mb-2">
+                    <h2 class="text-lg font-bold"><%= p.product.title %></h2>
+                    <p>Quantity: <%= p.quantity %></p>
+                    <p>Price: $<%= p.product.price %></p>
+                </div>
+                <% } %>
+            </article>
+            <% } %>
+        </div>
+        <% } else { %>
+        <h1 class="text-xl font-bold">No Orders found.</h1>
+        <% } %>
+    </main>
 
-            <%- include('includes/footer.ejs') %>
+    <%- include('includes/footer.ejs') %>

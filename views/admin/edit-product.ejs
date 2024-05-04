@@ -5,16 +5,16 @@
 <body>
     <%- include('../includes/navigation.ejs') %>
     <main>
-        <form action="" method="post" class="add-product-form">
+        <form action="" method="post" class="max-w-md mx-auto bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 mt-4">
             <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-            <input type="text" name="title" id="title" placeholder="Title" class="add-product-form-input" value="<%= mode === 'edit' ? product.title : '' %>">
-            <input type="text" name="imageUrl" id="imageUrl" placeholder="Image URL" class="add-product-form-input" value="<%= mode === 'edit' ? product.imageUrl : '' %>">
-            <input type="text" name="price" id="price" placeholder="Price" class="add-product-form-input" value="<%= mode === 'edit' ? product.price : '' %>">
-            <textarea name="description" id="description" placeholder="Description" class="add-product-form-input"><%= mode === 'edit' ? product.description : '' %></textarea>
+            <input type="text" name="title" id="title" placeholder="Title" class="w-full mb-4 p-2 border border-gray-300 rounded" value="<%= mode === 'edit' ? product.title : '' %>">
+            <input type="text" name="imageUrl" id="imageUrl" placeholder="Image URL" class="w-full mb-4 p-2 border border-gray-300 rounded" value="<%= mode === 'edit' ? product.imageUrl : '' %>">
+            <input type="text" name="price" id="price" placeholder="Price" class="w-full mb-4 p-2 border border-gray-300 rounded" value="<%= mode === 'edit' ? product.price : '' %>">
+            <textarea name="description" id="description" placeholder="Description" class="w-full mb-4 p-2 border border-gray-300 rounded"><%= mode === 'edit' ? product.description : '' %></textarea>
             <% if (mode === 'edit') { %>
                 <input type="hidden" name="productId" value="<%= product._id %>">
             <% } %>
-            <button type="submit" class="add-product-form-button">Save Product</button>
+            <button type="submit" class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Save Product</button>
         </form>
     </main>
 

@@ -1,25 +1,24 @@
 <%- include('includes/header.ejs') %>
-    <link rel="stylesheet" href="/css/product.css">
 
 </head>
-<body>
+<body class="bg-gray-100">
     <%- include('includes/navigation.ejs') %>
-    <main>
-        <div class="product-detail box">
-            <div class="product-detail__image">
-                <img src="<%= product.imageUrl %>" alt="<%= product.title %>">
+    <main class="container mx-auto px-4">
+        <div class="bg-white rounded-lg shadow-md p-4">
+            <div class="mb-4">
+                <img src="<%= product.imageUrl %>" alt="<%= product.title %>" class="w-full">
             </div>
-            <div class="product-detail__content">
-                <h1><%= product.title %></h1>
-                <p><%= product.description %></p>
-                <p>$<%= product.price %></p>
+            <div class="text-center">
+                <h1 class="text-2xl font-bold mb-2"><%= product.title %></h1>
+                <p class="mb-4"><%= product.description %></p>
+                <p class="text-lg font-bold">$<%= product.price %></p>
                 <% if (isAuthenticated) { %>
-                    <%- include('includes/add-to-cart-button.ejs'), {product: product} %>
+                    <%- include('includes/add-to-cart-button.ejs', {product: product}) %>
                 <% } %>
             </div>
         </div>
-        <div class="back-link">
-            <a href="/" class="back-link__button">Back to Shop</a>
+        <div class="mt-4">
+            <a href="/" class="block text-center text-blue-500">Back to Shop</a>
         </div>
     </main>
 

@@ -2,39 +2,39 @@
 <link rel="stylesheet" href="/css/shop.css">
 </head>
 
-<body>
+<body class="bg-gray-100">
     <%- include('../includes/navigation.ejs') %>
-    <main>
+    <main class="container mx-auto px-4 py-8">
         <% if (products.length > 0) { %>
-            <div class="grid">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 <% for (let product of products) { %>
-                    <article class="card">
-                        <header class="card-header">
-                            <h1 class="card-header-title"><%= product.title %></h1>
+                    <article class="bg-white rounded-lg shadow-lg">
+                        <header class="p-4">
+                            <h1 class="text-xl font-bold"><%= product.title %></h1>
                         </header>
-                        <div class="card-image">
-                            <img src="<%= product.imageUrl %>" alt="<%= product.title %>">
+                        <div class="p-4">
+                            <img src="<%= product.imageUrl %>" alt="<%= product.title %>" class="w-full">
                         </div>
-                        <div class="card-content">
-                            <h2 class="card-content-price">$<%= product.price %></h2>
-                            <p class="card-content-description"><%= product.description %></p>
+                        <div class="p-4">
+                            <h2 class="text-lg font-bold">$<%= product.price %></h2>
+                            <p class="mt-2"><%= product.description %></p>
                         </div>
 
-                        <footer class="card-footer">
-                            <div class="card-actions">
-                                <a href="/admin/product/<%= product._id %>" class="card-actions-button">Edit</a>
+                        <footer class="p-4 flex justify-between">
+                            <div class="flex justify-end mt-4">
+                                <a href="/admin/product/<%= product._id %>" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4">Edit</a>
                             </div>
-                            <form action="/admin/product/delete-product" method="POST">
+                            <form action="/admin/product/delete-product" method="POST" class="mt-4">
                                 <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                                 <input type="hidden" name="productId" value="<%= product._id %>">
-                                <button class="card-footer-button" type="submit">Delete</button>
+                                <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-4" type="submit">Delete</button>
                             </form>
                         </footer>
                     </article>
                 <% } %>
             </div>
         <% } else { %>
-            <h1>No products found.</h1>
+            <h1 class="text-2xl font-bold text-center mt-8">No products found.</h1>
         <% } %>
     </main>
 
