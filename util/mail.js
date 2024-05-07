@@ -19,3 +19,5 @@ async function sendMail(props) {
         html: props.html
     });
 }
+
+module.exports = sendMail;
