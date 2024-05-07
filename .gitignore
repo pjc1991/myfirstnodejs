@@ -40,3 +40,6 @@ Thumbs.db
 
 # Tailwind CSS
 public/css/style.css
+
+# dotenv
+.env
