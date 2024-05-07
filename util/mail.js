@@ -18,6 +18,8 @@ async function sendMail(props) {
         subject: props.subject,
         html: props.html
     });
+
+    return info;
 }
 
-module.exports = sendMail;
+exports.sendMail = sendMail;

@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
+const bcrypt = require('bcryptjs');
+
 const Order = require('./order');
 
 const userSchema = new Schema({
@@ -25,6 +27,12 @@ const userSchema = new Schema({
                 required: true
             }
         }]
+    },
+    resetToken: {
+        type: String
+    },
+    resetTokenExpiration: {
+        type: Date
     }
 });
 
@@ -67,6 +75,20 @@ userSchema.methods.removeFromCart = function (productId) {
 
 userSchema.methods.clearCart = function () {
     this.cart = { items: [] };
+    return this.save();
+}
+
+userSchema.methods.createResetToken = function () {
+    const token = require('crypto').randomBytes(32).toString('hex');
+    this.resetToken = token;
+    this.resetTokenExpiration = Date.now() + 24 * 60 * 60 * 1000;
+    return this.save();
+}
+
+userSchema.methods.changePassword = function (password) {
+    this.password = bcrypt.hashSync(password, 12);
+    this.resetToken = null;
+    this.resetTokenExpiration = null;
     return this.save();
 }
 
