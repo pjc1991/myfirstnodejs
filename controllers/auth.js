@@ -105,6 +105,13 @@ exports.postReset = (req, res, next) => {
         }
 
         user.createResetToken();
+        mailUtil.sendMail({
+            to: req.body.email,
+            subject: 'Password reset',
+            html: `<p>You requested a password reset</p>
+            <p>Click this <a href="http://localhost:3000/reset/${user.resetToken}">link</a> to set a new password</p>`
+        });
+
         req.flash('message', 'Password reset email sent');
         res.redirect('/reset');
     })
@@ -137,7 +144,7 @@ exports.getNewPassword = (req, res, next) => {
 
 exports.postNewPassword = (req, res, next) => {
     const userId = req.body.userId;
-    const token = req.body.token;
+    const token = req.params.token;
     const password = req.body.password;
 
     User.findOne({ resetToken: token, resetTokenExpiration: { $gt: Date.now() }, _id: userId })
