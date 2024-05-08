@@ -1,6 +1,7 @@
 const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 const mailUtil = require('../util/mail');
+const { validationResult } = require('express-validator');
 
 exports.getLogin = (req, res, next) => {
     res.render('auth/login', {
@@ -58,6 +59,17 @@ exports.getSignup = (req, res, next) => {
 }
 
 exports.postSignup = (req, res, next) => {
+
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(422).render('auth/signup', {
+            pageTitle: 'Signup',
+            path: '/signup',
+            message: errors.array()[0].msg
+        });
+    }
+
 
     User.findOne({ email: req.body.email }).then(existsUser => {
         if (existsUser) {
