@@ -78,6 +78,11 @@ app.use((req, res, next) => {
         req.user = user;
         res.locals.isAuthenticated = req.session.isLoggedIn;
         next();
+    })
+    .catch(err => {
+        const error = new Error(err);
+        error.httpStatusCode = 500;
+        next(error);
     });
 });
 
