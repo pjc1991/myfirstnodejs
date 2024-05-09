@@ -1,4 +1,5 @@
 const Product = require('../models/product');
+const { validationResult } = require('express-validator');
 
 exports.getProducts = (req, res, next) => {
     Product
@@ -22,10 +23,32 @@ exports.getAddProduct = (req, res, next) => {
         mode: 'add',
         pageTitle: 'Add Product',
         path: '/admin/product/add-product',
+        product: {},
+        message: '',
+        errors : [],
     });
 };
 
 exports.postAddProduct = (req, res, next) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(422).render('admin/edit-product', {
+            mode: 'add',
+            pageTitle: 'Add Product',
+            path: '/admin/product/add-product',
+            product: {
+                title: req.body.title,
+                price: req.body.price,
+                imageUrl: req.body.imageUrl,
+                description: req.body.description,
+            },
+            message: errors.array()[0].msg,
+            errors : errors.array(),
+        });
+    }
+
+
     const product = new Product({
         title: req.body.title,
         price: req.body.price,
@@ -67,6 +90,8 @@ exports.getEditProduct = (req, res, next) => {
                 mode: 'edit',
                 pageTitle: 'Edit Product',
                 path: '/admin/product/edit-product',
+                message: '',
+                errors : [],
             });
         }).catch(err => {
             console.log(err);
@@ -74,6 +99,30 @@ exports.getEditProduct = (req, res, next) => {
 };
 
 exports.postEditProduct = (req, res, next) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return Product.findById(req.params.productId)
+        .then(product => {
+            res.status(422).render('admin/edit-product', {
+                product: {
+                    title: req.body.title,
+                    price: req.body.price,
+                    imageUrl: req.body.imageUrl,
+                    description: req.body.description,
+                    _id: req.params.productId,
+                },
+                mode: 'edit',
+                pageTitle: 'Edit Product',
+                path: '/admin/product/edit-product',
+                message: errors.array()[0].msg,
+                errors : errors.array(),
+            });
+        }).catch(err => {
+            console.log(err);
+        });
+    }
+
     Product
         .findById(req.params.productId)
         .then(product => {

@@ -1,21 +1,32 @@
 <%- include('../includes/header.ejs') %>
     <link rel="stylesheet" href="/css/product.css">
-</head>
+    </head>
 
-<body class="bg-gray-100">
-    <%- include('../includes/navigation.ejs') %>
-    <main class="container mx-auto px-4">
-        <form action="" method="post" class="max-w-md mx-auto bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 mt-4">
-            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-            <input type="text" name="title" id="title" placeholder="Title" class="w-full mb-4 p-2 border border-gray-300 rounded" value="<%= mode === 'edit' ? product.title : '' %>">
-            <input type="text" name="imageUrl" id="imageUrl" placeholder="Image URL" class="w-full mb-4 p-2 border border-gray-300 rounded" value="<%= mode === 'edit' ? product.imageUrl : '' %>">
-            <input type="text" name="price" id="price" placeholder="Price" class="w-full mb-4 p-2 border border-gray-300 rounded" value="<%= mode === 'edit' ? product.price : '' %>">
-            <textarea name="description" id="description" placeholder="Description" class="w-full mb-4 p-2 border border-gray-300 rounded"><%= mode === 'edit' ? product.description : '' %></textarea>
-            <% if (mode === 'edit') { %>
-                <input type="hidden" name="productId" value="<%= product._id %>">
-            <% } %>
-            <button type="submit" class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Save Product</button>
-        </form>
-    </main>
+    <body class="bg-gray-100">
+        <%- include('../includes/navigation.ejs') %>
+            <main class="container mx-auto px-4">
+                <form action="" method="post"
+                    class="max-w-md mx-auto bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 mt-4">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <input type="text" name="title" id="title" placeholder="Title"
+                        class="w-full mb-4 p-2 border border-gray-300 rounded <%= errors.find(e => e.path === 'title') ? 'border-red-500' : '' %>"
+                        value="<%= product.title %>">
+                    <input type="text" name="imageUrl" id="imageUrl" placeholder="Image URL"
+                        class="w-full mb-4 p-2 border border-gray-300 rounded <%= errors.find(e => e.path === 'imageUrl') ? 'border-red-500' : '' %>"
+                        value="<%= product.imageUrl %>">
+                    <input type="text" name="price" id="price" placeholder="Price"
+                        class="w-full mb-4 p-2 border border-gray-300 rounded <%= errors.find(e => e.path === 'price') ? 'border-red-500' : '' %>"
+                        value="<%= product.price %>">
+                    <textarea name="description" id="description" placeholder="Description"
+                        class="w-full mb-4 p-2 border border-gray-300 rounded <%= errors.find(e => e.path === 'description') ? 'border-red-500' : '' %>"><%= product.description %></textarea>
+                    <% if (mode==='edit' ) { %>
+                        <input type="hidden" name="productId" value="<%= product._id %>">
+                        <% } %>
+                            <button type="submit"
+                                class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Save
+                                Product</button>
+                </form>
+            </main>
 
-<%- include('../includes/footer.ejs') %>
+            <%- include('../includes/modal.ejs', { message: message }) %>
+                <%- include('../includes/footer.ejs') %>

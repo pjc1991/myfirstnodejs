@@ -6,16 +6,39 @@ const router = express.Router();
 
 const isAuth = require('../middleware/is-auth');
 
+const { 
+    titleValidation,
+    imageURLValidation,
+    priceValidation,
+    descriptionValidation,
+    productExistsValidation,
+} = require('../validator/product');
+
 router.get('/product', isAuth, adminController.getProducts);
 
 router.get('/product/add-product', isAuth, adminController.getAddProduct);
 
-router.post('/product/add-product', isAuth, adminController.postAddProduct);
+router.post('/product/add-product',
+    isAuth, 
+    titleValidation(),
+    imageURLValidation(),
+    priceValidation(),
+    descriptionValidation(),
+    productExistsValidation(),
+    adminController.postAddProduct
+);
 
 router.post('/product/delete-product', isAuth, adminController.postDeleteProduct);
 
 router.get('/product/:productId', isAuth, adminController.getEditProduct);
 
-router.post('/product/:productId', isAuth, adminController.postEditProduct);
+router.post('/product/:productId', 
+    isAuth, 
+    titleValidation(),
+    imageURLValidation(),
+    priceValidation(),
+    descriptionValidation(),
+    productExistsValidation(),
+    adminController.postEditProduct);
 
 module.exports = router;
