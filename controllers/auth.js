@@ -71,8 +71,9 @@ exports.postLogin = (req, res, next) => {
                 })
             })
             .catch(err => {
-                console.log(err);
-                res.redirect('/login');
+                const error = new Error(err);
+                error.httpStatusCode = 500;
+                return next(error);
             });
     })
         .catch(err => {
@@ -136,6 +137,11 @@ exports.postSignup = (req, res, next) => {
     return user.save()
         .then(result => {
             res.redirect('/login');
+        })
+        .catch(err => {
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
         });
 
 }
@@ -168,7 +174,9 @@ exports.postReset = (req, res, next) => {
             res.redirect('/reset');
         })
         .catch(err => {
-            console.log(err);
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
         });
 }
 
@@ -190,7 +198,9 @@ exports.getNewPassword = (req, res, next) => {
             });
         })
         .catch(err => {
-            console.log(err);
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
         });
 }
 
@@ -210,4 +220,9 @@ exports.postNewPassword = (req, res, next) => {
             req.flash('message', 'Password changed');
             res.redirect('/login');
         })
+        .catch(err => {
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
+        });
 }

@@ -86,4 +86,9 @@ app.use((req, res, next) => {
 app.use('/admin', adminRoutes);
 app.use('/', shopRoutes);
 app.use('/', authRoutes);
+app.use('/500', errorsController.getInternalServerError);
 app.use(errorsController.getNotFound);
+app.use((error, req, res, next) => {
+    console.log(error);
+    res.redirect('/500')
+});

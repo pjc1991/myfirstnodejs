@@ -9,7 +9,9 @@ exports.getProducts = (req, res, next) => {
             path: '/',
         });
     }).catch(err => {
-        console.log(err);
+        const error = new Error(err);
+        error.httpStatusCode = 500;
+        return next(error);
     });
 };
 
@@ -17,12 +19,13 @@ exports.getProduct = (req, res, next) => {
     Product.findById(req.params.productId)
         .then(product => {
             res.render('product-detail', {
-                product: product,
-                pageTitle: product.title,
-                path: '/product/:productId',
+                product: product, pageTitle: product.title, path: '/product/:productId',
             });
-        }).catch(err => {
-            console.log(err);
-        });
+        })
+        .catch(err => {
+        const error = new Error(err);
+        error.httpStatusCode = 500;
+        return next(error);
+    });
 }
 
