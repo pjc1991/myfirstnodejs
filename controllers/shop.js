@@ -1,18 +1,35 @@
 const Product = require('../models/product');
-
+const pageSize = 2;
+const pageRange = 2;
 
 exports.getProducts = (req, res, next) => {
-    Product.find().then(products => {
-        res.render('shop', {
-            prods: products,
-            pageTitle: 'Shop',
-            path: '/',
+    const page = req.query.page === undefined ? 1 : parseInt(req.query.page);
+    const offset = (page - 1) * pageSize;
+    let totalPage;
+    Product.countDocuments().then(numProducts => {
+        totalPage = Math.ceil(numProducts / pageSize);
+    }).then(result => {
+        return Product.find()
+            .skip(offset)
+            .limit(pageSize)
+    })
+        .then(products => {
+            res.render('shop', {
+                prods: products,
+                pageTitle: 'Shop',
+                totalPage: totalPage,
+                currentPage: page,
+                pageStart : Math.max(1, totalPage - pageRange),
+                pageEnd : Math.min(totalPage, totalPage + pageRange),
+                path: '/',
+            })
+        })
+        .catch(err => {
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
         });
-    }).catch(err => {
-        const error = new Error(err);
-        error.httpStatusCode = 500;
-        return next(error);
-    });
+
 };
 
 exports.getProduct = (req, res, next) => {
@@ -23,9 +40,9 @@ exports.getProduct = (req, res, next) => {
             });
         })
         .catch(err => {
-        const error = new Error(err);
-        error.httpStatusCode = 500;
-        return next(error);
-    });
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
+        });
 }
 

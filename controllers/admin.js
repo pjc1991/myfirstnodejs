@@ -1,23 +1,37 @@
 const Product = require('../models/product');
 const {validationResult} = require('express-validator');
 const fileUtil = require('../util/file');
+const pageSize = 2;
+const pageRange = 2;
 
 exports.getProducts = (req, res, next) => {
-    Product
-        .find({
-            userId: req.user._id
+    const page = +req.query.page || 1;
+    let totalPage;
+    Product.countDocuments()
+        .then(totalItems => {
+            totalPage = Math.ceil(totalItems / pageSize);
+            const offset = (page - 1) * pageSize;
+            return Product
+                .find({userId: req.user._id})
+                .skip(offset)
+                .limit(pageSize);
         })
         .then(products => {
             res.render('admin/products', {
                 products: products,
                 pageTitle: 'Admin Products',
                 path: '/admin/product',
+                currentPage : page,
+                pageStart : Math.max(1, page - pageRange),
+                pageEnd : Math.min(totalPage, page + pageRange),
+                totalPage : totalPage,
             });
         })
         .catch(err => {
             console.log(err);
         });
-};
+}
+
 
 exports.getAddProduct = (req, res, next) => {
     res.render('admin/edit-product', {

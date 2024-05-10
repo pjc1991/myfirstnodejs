@@ -16,12 +16,9 @@ exports.imageURLValidation = () =>
 exports.imageFileValidation = () =>
     check('image')
         .custom((value, { req }) => {
-            if (req.file){
-                console.log('it is file!')
-                return true;
-            }
-            return false;
+            return true;
         })
+        .withMessage('Image must be a file');
 
 exports.priceValidation = () =>
     check('price')

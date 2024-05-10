@@ -1,0 +1,13 @@
+<section class="flex justify-center items-center my-4">
+    <% if (currentPage !== 1) { %>
+        <a href="<%= url %>?page=1" class="bg-gray-700 text-white px-4 font-light py-2 rounded mx-2">First</a>
+        <span class="px-4 font-light py-2 rounded mx-2">...</span>
+    <% } %>
+    <% for (let i = pageStart; i <= pageEnd; i++) { %>
+        <a href="<%= url %>?page=<%= i %>" class="bg-gray-700 text-white px-4 <% if (currentPage === i) {%>font-bold<% }%> py-2 rounded mx-2"><%= i %></a>
+    <% } %>
+    <% if (currentPage !== totalPage) { %>
+        <span class="px-4 font-light py-2 rounded mx-2">...</span>
+        <a href="<%= url %>?page=<%= totalPage %>" class="bg-gray-700 text-white px-4 font-light py-2 rounded mx-2">Last</a>
+    <% } %>
+</section>

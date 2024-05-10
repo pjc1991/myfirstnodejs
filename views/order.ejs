@@ -12,16 +12,27 @@
                     <h1 class="text-xl font-bold">Order ID: <%= order._id %></h1>
                 </div>
                 <% for (let p of order.products) { %>
-                <div class="mb-2">
+                <div class="mb-4">
                     <h2 class="text-lg font-bold"><%= p.product.title %></h2>
                     <p>Quantity: <%= p.quantity %></p>
                     <p>Price: $<%= p.product.price %></p>
                 </div>
                 <% } %>
-                <a href="/order/<%= order._id %>" class="btn btn-primary">Download Invoice</a>
+                <div class="mb-4">
+                    <a href="/order/<%= order._id %>" class="btn btn-primary bg-gray-400 text-white rounded-md py-2 px-4">
+                        Download Invoice
+                    </a>
+                </div>
             </article>
             <% } %>
         </div>
+            <%- include('includes/pagination.ejs', {
+            currentPage : currentPage,
+            pageStart : pageStart,
+            pageEnd : pageEnd,
+            totalPage: totalPage,
+            url: path
+            })%>
         <% } else { %>
         <h1 class="text-xl font-bold">No Orders found.</h1>
         <% } %>

@@ -1,15 +1,30 @@
 const Order = require('../models/order');
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
+const pageSize = 2;
+const pageRange = 2;
 
 exports.getOrders = (req, res, next) => {
-    Order
-        .find({'user.userId': req.user._id})
+    const page = +req.query.page || 1;
+    let totalPage;
+    Order.countDocuments({'user.userId': req.user._id})
+        .then(numOrders => {
+            const offset = (page - 1) * pageSize;
+            totalPage = Math.ceil(numOrders / pageSize);
+            return Order
+                .find({'user.userId': req.user._id})
+                .skip(offset)
+                .limit(pageSize)
+        })
         .then(orders => {
             res.render('order', {
                 orders: orders,
                 pageTitle: 'Orders',
                 path: '/order',
+                currentPage: page,
+                totalPage: totalPage,
+                pageStart: Math.max(1, page - pageRange),
+                pageEnd: Math.min(totalPage, page + pageRange)
             });
         })
         .catch(err => {
