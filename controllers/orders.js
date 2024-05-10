@@ -69,15 +69,16 @@ exports.getInvoice = (req, res, next) => {
             .text('Invoice', {
                 underline: true
             });
-        invoiceDocument.text('-----------------------');
+        invoiceDocument.moveDown();
+
         let totalPrice = 0;
         order.products.forEach(prod => {
             totalPrice += prod.quantity * prod.product.price;
-            invoiceDocument
-                .fontSize(14)
-                .text(`${prod.product.title} - ${prod.quantity} x $${prod.product.price}`);
+            invoiceDocument.text().fontSize(14).list([
+                `${prod.product.title} - ${prod.quantity} x $${prod.product.price} = $${prod.quantity * prod.product.price}`
+            ])
         });
-        invoiceDocument.text('---');
+        invoiceDocument.moveDown();
         invoiceDocument.fontSize(20).text(`Total Price: $${totalPrice}`);
         invoiceDocument.end();
 
