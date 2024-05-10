@@ -1,5 +1,7 @@
 const Product = require('../models/product');
-const { validationResult } = require('express-validator');
+const {validationResult} = require('express-validator');
+const fileUtil = require('../util/file');
+
 exports.getProducts = (req, res, next) => {
     Product
         .find({
@@ -24,7 +26,7 @@ exports.getAddProduct = (req, res, next) => {
         path: '/admin/product/add-product',
         product: {},
         message: '',
-        errors : [],
+        errors: [],
     });
 };
 
@@ -42,7 +44,7 @@ exports.postAddProduct = (req, res, next) => {
                 description: req.body.description,
             },
             message: errors.array()[0].msg,
-            errors : errors.array(),
+            errors: errors.array(),
         });
     }
 
@@ -62,23 +64,37 @@ exports.postAddProduct = (req, res, next) => {
             res.redirect('/admin/product');
         })
         .catch(err => {
-            console.log(err);
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
         });
 
 };
 
 exports.postDeleteProduct = (req, res, next) => {
-    Product.deleteOne({
-        _id: req.body.productId,
-        userId: req.user._id
-    })
+    let filePath;
+    Product.findById(req.body.productId)
+        .then(product => {
+            if (!product) {
+                return next(new Error('Product not found.'));
+            }
+            filePath = product.image;
+            return Product.deleteOne({
+                _id: req.body.productId,
+                userId: req.user._id
+            });
+        })
         .then(result => {
+            fileUtil.deleteFile(filePath);
             res.redirect('/admin/product');
         })
         .catch(err => {
-            console.log(err);
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
         });
-};
+}
+
 
 exports.getEditProduct = (req, res, next) => {
     Product.findById(req.params.productId)
@@ -89,11 +105,13 @@ exports.getEditProduct = (req, res, next) => {
                 pageTitle: 'Edit Product',
                 path: '/admin/product/edit-product',
                 message: '',
-                errors : [],
+                errors: [],
             });
         }).catch(err => {
-            console.log(err);
-        });
+        const error = new Error(err);
+        error.httpStatusCode = 500;
+        return next(error);
+    });
 };
 
 exports.postEditProduct = (req, res, next) => {
@@ -101,23 +119,25 @@ exports.postEditProduct = (req, res, next) => {
 
     if (!errors.isEmpty()) {
         return Product.findById(req.params.productId)
-        .then(product => {
-            res.status(422).render('admin/edit-product', {
-                product: {
-                    title: req.body.title,
-                    price: req.body.price,
-                    description: req.body.description,
-                    _id: req.params.productId,
-                },
-                mode: 'edit',
-                pageTitle: 'Edit Product',
-                path: '/admin/product/edit-product',
-                message: errors.array()[0].msg,
-                errors : errors.array(),
+            .then(product => {
+                res.status(422).render('admin/edit-product', {
+                    product: {
+                        title: req.body.title,
+                        price: req.body.price,
+                        description: req.body.description,
+                        _id: req.params.productId,
+                    },
+                    mode: 'edit',
+                    pageTitle: 'Edit Product',
+                    path: '/admin/product/edit-product',
+                    message: errors.array()[0].msg,
+                    errors: errors.array(),
+                });
+            }).catch(err => {
+                const error = new Error(err);
+                error.httpStatusCode = 500;
+                return next(error);
             });
-        }).catch(err => {
-            console.log(err);
-        });
     }
 
     Product
@@ -133,6 +153,7 @@ exports.postEditProduct = (req, res, next) => {
             product.description = req.body.description;
 
             if (req.file) {
+                fileUtil.deleteFile(product.image);
                 product.image = req.file.path;
             }
 
@@ -142,6 +163,8 @@ exports.postEditProduct = (req, res, next) => {
             });
         })
         .catch(err => {
-            console.log(err);
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
         });
 };
