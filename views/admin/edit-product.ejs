@@ -5,15 +5,15 @@
     <body class="bg-gray-100">
         <%- include('../includes/navigation.ejs') %>
             <main class="container mx-auto px-4">
-                <form action="" method="post"
+                <form action="" method="post" enctype="multipart/form-data"
                     class="max-w-md mx-auto bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 mt-4">
                     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                     <input type="text" name="title" id="title" placeholder="Title"
                         class="w-full mb-4 p-2 border border-gray-300 rounded <%= errors.find(e => e.path === 'title') ? 'border-red-500' : '' %>"
                         value="<%= product.title %>">
-                    <input type="text" name="imageUrl" id="imageUrl" placeholder="Image URL"
-                        class="w-full mb-4 p-2 border border-gray-300 rounded <%= errors.find(e => e.path === 'imageUrl') ? 'border-red-500' : '' %>"
-                        value="<%= product.imageUrl %>">
+                    <input type="file" name="image" id="image" placeholder="Upload image"
+                        class="w-full mb-4 p-2 border border-gray-300 rounded <%= errors.find(e => e.path === 'image') ? 'border-red-500' : '' %>"
+                        value="<%= product.image %>">
                     <input type="text" name="price" id="price" placeholder="Price"
                         class="w-full mb-4 p-2 border border-gray-300 rounded <%= errors.find(e => e.path === 'price') ? 'border-red-500' : '' %>"
                         value="<%= product.price %>">

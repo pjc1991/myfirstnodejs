@@ -13,6 +13,16 @@ exports.imageURLValidation = () =>
         .isURL()
         .withMessage('Image URL must be a valid URL');
 
+exports.imageFileValidation = () =>
+    check('image')
+        .custom((value, { req }) => {
+            if (req.file){
+                console.log('it is file!')
+                return true;
+            }
+            return false;
+        })
+
 exports.priceValidation = () =>
     check('price')
         .isFloat()

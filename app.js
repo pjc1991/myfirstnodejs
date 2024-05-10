@@ -6,8 +6,9 @@ const path = require('path');
 const mongoose = require('mongoose');
 const MongoStore = require('connect-mongo');
 const cookieParser = require('cookie-parser');
-const { doubleCsrf } = require('csrf-csrf');
-const flash = require('connect-flash');
+const {doubleCsrf} = require('csrf-csrf');
+const flash = require('connect-flash')
+const multer = require('multer');
 
 const User = require('./models/user');
 
@@ -36,8 +37,36 @@ mongoose
     });
 
 // MIDDLEWARE
-app.use(bodyParser.urlencoded({ extended: false }));
+// bodyParser
+app.use(bodyParser.urlencoded({extended: false}));
+
+// multer
+const fileStorage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, path.join('uploadfiles', 'images'));
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + '-' + file.originalname);
+    }
+});
+
+const fileFilter = (req, file, cb) => {
+    if (file.mimetype !== 'image/png' && file.mimetype !== 'image/jpg' && file.mimetype !== 'image/jpeg') {
+        return cb(null, false);
+    }
+
+    cb(null, true);
+}
+
+app.use(multer({
+        storage: fileStorage,
+        fileFilter: fileFilter,
+    })
+    .single('image'));
+// static files
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/uploadfiles', express.static(path.join(__dirname, 'uploadfiles')));
+// session
 app.use(session({
     secret: 'some secret key',
     resave: false,
@@ -47,8 +76,10 @@ app.use(session({
     })
 
 }));
+// cookie
 app.use(cookieParser('cookie-secret-key'));
-const { 
+// csrf
+const {
     generatedToken,
     doubleCsrfProtection
 } = doubleCsrf({
@@ -62,8 +93,9 @@ const {
     getTokenFromRequest: req => req.body._csrf
 });
 app.use(doubleCsrfProtection);
+// flash
 app.use(flash());
-
+// locals
 app.use((req, res, next) => {
     const csrfToken = req.csrfToken();
     res.locals.csrfToken = csrfToken;
@@ -71,19 +103,19 @@ app.use((req, res, next) => {
         res.locals.isAuthenticated = false;
         return next();
     }
-    
+
     User
-    .findById(req.session.user._id)
-    .then(user => {
-        req.user = user;
-        res.locals.isAuthenticated = req.session.isLoggedIn;
-        next();
-    })
-    .catch(err => {
-        const error = new Error(err);
-        error.httpStatusCode = 500;
-        next(error);
-    });
+        .findById(req.session.user._id)
+        .then(user => {
+            req.user = user;
+            res.locals.isAuthenticated = req.session.isLoggedIn;
+            next();
+        })
+        .catch(err => {
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            next(error);
+        });
 });
 
 

@@ -43,3 +43,6 @@ public/css/style.css
 
 # dotenv
 .env
+
+# uploadfiles
+uploadfiles

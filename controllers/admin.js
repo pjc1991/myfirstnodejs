@@ -1,6 +1,5 @@
 const Product = require('../models/product');
 const { validationResult } = require('express-validator');
-
 exports.getProducts = (req, res, next) => {
     Product
         .find({
@@ -40,7 +39,6 @@ exports.postAddProduct = (req, res, next) => {
             product: {
                 title: req.body.title,
                 price: req.body.price,
-                imageUrl: req.body.imageUrl,
                 description: req.body.description,
             },
             message: errors.array()[0].msg,
@@ -52,7 +50,7 @@ exports.postAddProduct = (req, res, next) => {
     const product = new Product({
         title: req.body.title,
         price: req.body.price,
-        imageUrl: req.body.imageUrl,
+        image: req.file.path,
         description: req.body.description,
         userId: req.user,
     });
@@ -108,7 +106,6 @@ exports.postEditProduct = (req, res, next) => {
                 product: {
                     title: req.body.title,
                     price: req.body.price,
-                    imageUrl: req.body.imageUrl,
                     description: req.body.description,
                     _id: req.params.productId,
                 },
@@ -133,8 +130,11 @@ exports.postEditProduct = (req, res, next) => {
 
             product.title = req.body.title;
             product.price = req.body.price;
-            product.imageUrl = req.body.imageUrl;
             product.description = req.body.description;
+
+            if (req.file) {
+                product.image = req.file.path;
+            }
 
             return product.save().then(result => {
                 console.log('Product updated!');
