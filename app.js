@@ -90,7 +90,7 @@ const {
         secure: false,
         sameSite: 'strict'
     },
-    getTokenFromRequest: req => req.body._csrf
+    getTokenFromRequest: req => req.body._csrf || req.headers['csrf-token']
 });
 app.use(doubleCsrfProtection);
 // flash

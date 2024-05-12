@@ -1,5 +1,4 @@
 <%- include('../includes/header.ejs') %>
-<link rel="stylesheet" href="/css/shop.css">
 </head>
 
 <body class="bg-gray-100">
@@ -8,7 +7,7 @@
         <% if (products.length > 0) { %>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 <% for (let product of products) { %>
-                    <article class="bg-white rounded-lg shadow-lg">
+                    <article class="bg-white rounded-lg shadow-lg" data-product-id="<%= product._id %>">
                         <header class="p-4">
                             <h1 class="text-xl font-bold"><%= product.title %></h1>
                         </header>
@@ -26,11 +25,11 @@
                             <div class="flex justify-end mt-4">
                                 <a href="/admin/product/<%= product._id %>" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4">Edit</a>
                             </div>
-                            <form action="/admin/product/delete-product" method="POST" class="mt-4">
+                            <div class="flex justify-end mt-4">
                                 <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                                 <input type="hidden" name="productId" value="<%= product._id %>">
-                                <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-4" type="submit">Delete</button>
-                            </form>
+                                <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-4" onclick="deleteProduct(this)">Delete</button>
+                            </div>
                         </footer>
                     </article>
                 <% } %>
@@ -48,3 +47,4 @@
     </main>
 
 <%- include('../includes/footer.ejs') %>
+    <script src="/js/admin.js"></script>
