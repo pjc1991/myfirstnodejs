@@ -9,6 +9,7 @@ const cookieParser = require('cookie-parser');
 const {doubleCsrf} = require('csrf-csrf');
 const flash = require('connect-flash')
 const multer = require('multer');
+const moment = require('moment');
 
 const User = require('./models/user');
 
@@ -39,6 +40,7 @@ mongoose
 // MIDDLEWARE
 // bodyParser
 app.use(bodyParser.urlencoded({extended: false}));
+app.use(express.json());
 
 // multer
 const fileStorage = multer.diskStorage({
@@ -99,6 +101,7 @@ app.use(flash());
 app.use((req, res, next) => {
     const csrfToken = req.csrfToken();
     res.locals.csrfToken = csrfToken;
+    res.locals.moment = moment;
     if (!req.session.user) {
         res.locals.isAuthenticated = false;
         return next();

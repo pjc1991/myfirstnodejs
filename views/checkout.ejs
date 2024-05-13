@@ -1,0 +1,99 @@
+<%- include('includes/header.ejs') %>
+</head>
+
+<body>
+<%- include('includes/navigation.ejs') %>
+<main class="container mx-auto px-4">
+    <div class="mt-4">
+        <div class="w-auto bg-gray-100 p-4 rounded border-2 border-gray-200">
+            <h1 class="text-2xl font-bold">
+                Cart
+            </h1>
+            <table class="min-w-full divide-y divide-gray-200 mt-4">
+                <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Quantity
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total
+                    </th>
+                </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                <% products.forEach(item => { %>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= item.productId.title %></td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= item.productId.price %> ₩</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= item.quantity %></td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= item.productId.price * item.quantity %> ₩</td>
+                    </tr>
+                <% }) %>
+                </tbody>
+            </table>
+        </div>
+        <div class="w-auto bg-gray-100 p-4 rounded border-2 border-gray-200 mt-4">
+            <h2 class="text-2xl font-bold">
+                Total: <%= total %> ₩
+            </h2>
+            <div class="mt-4 flex justify-end">
+                <button class="btn btn-primary mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onclick="requestPayment(); return false;">
+                    Checkout <%= total %> ₩ now
+                </button>
+            </div>
+        </div>
+    </div>
+
+</main>
+<%- include('includes/footer.ejs') %>
+<script src="https://cdn.portone.io/v2/browser-sdk.js"></script>
+<script>
+    const portone = window.PortOne;
+
+    async function requestPayment() {
+        const response = await portone.requestPayment({
+            storeId: "store-e152c581-09a1-46c5-b4d9-2771be75af62",
+            channelKey: "channel-key-8272c198-56ac-4d2d-9b72-caa2f0285ef8",
+            paymentId: "<%= paymentId %>",
+            orderName : "Order Name",
+            totalAmount: <%= total %>,
+            currency: "KRW",
+            payMethod: "CARD",
+            isTestChannel: true,
+        });
+
+        if (response.code != null) {
+            return alert(response.message);
+        }
+
+        const notified = await fetch(`/payment/complete`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "csrf-token": '<%= csrfToken %>'
+            },
+            body: JSON.stringify({
+                paymentId: "<%= paymentId %>",
+                status: "completed"
+            })
+        });
+
+        const notifiedJson = await notified.json();
+        console.log(notifiedJson);
+
+        if (notifiedJson.success === false) {
+            alert("Failed to pay!");
+            window.location.reload();
+            return;
+        }
+
+        if (notifiedJson.success === true) {
+            window.location.href = "/order";
+        }
+
+
+    }
+</script>

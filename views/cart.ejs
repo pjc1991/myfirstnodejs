@@ -23,10 +23,7 @@
                         <% } %>
                     </div>
                     <div class="flex justify-center">
-                        <form action="/order" method="POST" class="mt-4">
-                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                            <button class="bg-blue-500 text-white px-4 py-2 rounded" type="submit">Order Now</button>
-                        </form>
+                            <a href="/cart/checkout" class="bg-blue-500 text-white px-4 py-2 rounded" type="submit">Order Now</a>
                     </div>
 
                 <% } else { %>

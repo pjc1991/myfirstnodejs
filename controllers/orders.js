@@ -4,6 +4,8 @@ const fs = require('fs');
 const pageSize = 2;
 const pageRange = 2;
 
+const dotenv = require('dotenv').config();
+
 exports.getOrders = (req, res, next) => {
     const page = +req.query.page || 1;
     let totalPage;
@@ -12,7 +14,10 @@ exports.getOrders = (req, res, next) => {
             const offset = (page - 1) * pageSize;
             totalPage = Math.ceil(numOrders / pageSize);
             return Order
-                .find({'user.userId': req.user._id})
+                .find({
+                    'user.userId': req.user._id
+                })
+                .sort({createdAt: -1})
                 .skip(offset)
                 .limit(pageSize)
         })
@@ -35,12 +40,39 @@ exports.getOrders = (req, res, next) => {
 }
 
 exports.postOrder = (req, res, next) => {
+
     req.user
         .populate('cart.items.productId')
-        .then(user => {
+        .then(async user => {
+
+            // get paymentId from json body
+            const paymentId = req.body.paymentId;
             const products = user.cart.items.map(i => {
                 return {quantity: i.quantity, product: {...i.productId._doc}}
             });
+
+            let totalAmount = 0;
+            products.forEach(p => {
+                totalAmount += p.quantity * p.product.price;
+            });
+
+            const paymentResponse = await fetch(
+                `https://api.portone.io/payments/${paymentId}`,
+                {headers: {Authorization: `PortOne ${process.env.portone_payment_secret}`}},
+            );
+            if (!paymentResponse.ok) {
+                throw new Error(`Payment failed: ${paymentResponse.statusText}`);
+            }
+            const payment = await paymentResponse.json();
+
+            if (payment.amount.total !== totalAmount) {
+                console.log(payment.amount.total, totalAmount);
+                throw new Error('Invalid payment amount');
+            }
+
+            if (payment.status !== 'PAID') {
+                throw new Error('Payment not completed');
+            }
 
             const order = new Order({
                 user: {
@@ -53,12 +85,19 @@ exports.postOrder = (req, res, next) => {
         })
         .then(result => {
             req.user.clearCart();
-            res.redirect('/order');
+            res.json({
+                success: true,
+                message : 'Order placed successfully',
+                orderId: result._id,
+            });
         })
         .catch(err => {
             const error = new Error(err);
             error.httpStatusCode = 500;
-            return next(error);
+            res.json({
+                success: false,
+                message: error.message
+            });
         });
 }
 
@@ -90,11 +129,11 @@ exports.getInvoice = (req, res, next) => {
         order.products.forEach(prod => {
             totalPrice += prod.quantity * prod.product.price;
             invoiceDocument.text().fontSize(14).list([
-                `${prod.product.title} - ${prod.quantity} x $${prod.product.price} = $${prod.quantity * prod.product.price}`
+                `${prod.product.title} - ${prod.quantity} x ${prod.product.price} KRW = ${prod.quantity * prod.product.price} KRW`
             ])
         });
         invoiceDocument.moveDown();
-        invoiceDocument.fontSize(20).text(`Total Price: $${totalPrice}`);
+        invoiceDocument.fontSize(20).text(`Total Price: ${totalPrice} KRW`);
         invoiceDocument.end();
 
 

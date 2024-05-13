@@ -20,6 +20,11 @@ const orderSchema = new Schema({
             required: true,
             ref: 'User'
         }
+    },
+
+    createdAt: {
+        type: Date,
+        default: Date.now
     }
 });
 

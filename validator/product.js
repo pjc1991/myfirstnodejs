@@ -22,7 +22,7 @@ exports.imageFileValidation = () =>
 
 exports.priceValidation = () =>
     check('price')
-        .isFloat()
+        .isInt()
         .withMessage('Price must be a number');
 
 exports.descriptionValidation = () =>
