@@ -1,4 +1,4 @@
-const { check, body } = require('express-validator');
+const {check, body} = require('express-validator');
 
 exports.emailValidation = () => check('email')
     .isEmail()
@@ -12,7 +12,7 @@ exports.passwordValidation = () => body('password')
 
 exports.passwordMatchValidation = () => body('password2')
     .trim()
-    .custom((value, { req }) => {
+    .custom((value, {req}) => {
         if (value !== req.body.password) {
             throw new Error('Passwords have to match!');
         }
@@ -20,9 +20,8 @@ exports.passwordMatchValidation = () => body('password2')
     });
 
 exports.emailExistsValidation = (User) => exports.emailValidation()
-    .custom((email, { req }) => {
-        return
-        User.findOne({ email: email })
+    .custom((email, {req}) => {
+        return User.findOne({email: email})
             .then(user => {
                 if (user) {
                     return Promise.reject('The email exists already.');
