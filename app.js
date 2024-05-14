@@ -90,7 +90,7 @@ const {
     cookieName: 'x-csrf-token',
     cookieOptions: {
         httpOnly: true,
-        secure: false,
+        secure: true,
         sameSite: 'strict'
     },
     getTokenFromRequest: req => req.body._csrf || req.headers['csrf-token']
