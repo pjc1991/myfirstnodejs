@@ -103,7 +103,7 @@ exports.postSignup = (req, res, next) => {
             mailUtil.sendMail({
                 to: req.body.email, subject: 'Signup successful', html:
                     `<h1>Signup successful</h1>
-                    <p>Click this <a href="${process.env.SERVER_URI}/email-verification/${user.emailValidateToken}">link</a> to verify your email</p>`
+                    <p>Click this <a href="${process.env.SERVER_URL}/email-verification/${user.emailValidateToken}">link</a> to verify your email</p>`
 
             });
 
@@ -138,7 +138,7 @@ exports.postReset = (req, res, next) => {
             user.createResetToken();
             mailUtil.sendMail({
                 to: req.body.email, subject: 'Password reset', html: `<p>You requested a password reset</p>
-            <p>Click this <a href="${process.env.SERVER_URI}/reset/${user.resetToken}">link</a> to set a new password</p>`
+            <p>Click this <a href="${process.env.SERVER_URL}/reset/${user.resetToken}">link</a> to set a new password</p>`
             });
 
             req.flash('message', 'Password reset email sent');
@@ -256,7 +256,7 @@ exports.postEmailVerificationResend = (req, res, next) => {
             mailUtil.sendMail({
                 to: req.body.email,
                 subject: 'Email verification',
-                html: `<p>Click this <a href="${process.env.SERVER_URI}/email-verification/${user.emailValidateToken}">link</a> to verify your email</p>`
+                html: `<p>Click this <a href="${process.env.SERVER_URL}/email-verification/${user.emailValidateToken}">link</a> to verify your email</p>`
             });
 
             req.flash('message', 'Email verification email sent');
