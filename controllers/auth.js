@@ -1,7 +1,7 @@
 const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 const mailUtil = require('../util/mail');
-const { validationResult } = require('express-validator');
+const {validationResult} = require('express-validator');
 
 exports.getLogin = (req, res, next) => {
     res.render('auth/login', {
@@ -33,7 +33,8 @@ exports.postLogin = (req, res, next) => {
         });
     }
 
-    User.findOne({ email: req.body.email }).then(user => {
+    User.findOne({email: req.body.email})
+        .then(user => {
         if (!user) {
             return res.status(422).render('auth/login', {
                 pageTitle: 'Login',
@@ -66,18 +67,15 @@ exports.postLogin = (req, res, next) => {
                 req.session.user = user;
                 req.session.isLoggedIn = true;
                 req.session.save((err) => {
-                    console.log(err);
+                    if (err) throw new Error(err);
                     res.redirect('/');
                 })
             })
-            .catch(err => {
-                const error = new Error(err);
-                error.httpStatusCode = 500;
-                return next(error);
-            });
     })
         .catch(err => {
-            console.log(err);
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
         });
 }
 
@@ -155,7 +153,7 @@ exports.getReset = (req, res, next) => {
 }
 
 exports.postReset = (req, res, next) => {
-    User.findOne({ email: req.body.email })
+    User.findOne({email: req.body.email})
         .then(user => {
             if (!user) {
                 req.flash('message', 'Email not found');
@@ -182,7 +180,7 @@ exports.postReset = (req, res, next) => {
 
 exports.getNewPassword = (req, res, next) => {
     const token = req.params.token;
-    User.findOne({ resetToken: token, resetTokenExpiration: { $gt: Date.now() } })
+    User.findOne({resetToken: token, resetTokenExpiration: {$gt: Date.now()}})
         .then(user => {
             if (!user) {
                 req.flash('message', 'Invalid token');
@@ -209,7 +207,7 @@ exports.postNewPassword = (req, res, next) => {
     const token = req.params.token;
     const password = req.body.password;
 
-    User.findOne({ resetToken: token, resetTokenExpiration: { $gt: Date.now() }, _id: userId })
+    User.findOne({resetToken: token, resetTokenExpiration: {$gt: Date.now()}, _id: userId})
         .then(user => {
             if (!user) {
                 req.flash('message', 'Invalid token');
