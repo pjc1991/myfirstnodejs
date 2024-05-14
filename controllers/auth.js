@@ -256,7 +256,7 @@ exports.postEmailVerificationResend = (req, res, next) => {
             mailUtil.sendMail({
                 to: req.body.email,
                 subject: 'Email verification',
-                html: `<p>Click this <a href="${process.env.SERVER_URI}/${user.emailValidateToken}">link</a> to verify your email</p>`
+                html: `<p>Click this <a href="${process.env.SERVER_URI}/email-verification/${user.emailValidateToken}">link</a> to verify your email</p>`
             });
 
             req.flash('message', 'Email verification email sent');
