@@ -33,7 +33,18 @@ const userSchema = new Schema({
     },
     resetTokenExpiration: {
         type: Date
-    }
+    },
+    emailValidateToken: {
+        type: String
+    },
+    emailValidateTokenExpiration: {
+        type: Date
+    },
+    emailValidated: {
+        type: Boolean,
+        default: false
+    },
+
 });
 
 userSchema.methods.addToCart = function (product) {
@@ -79,9 +90,8 @@ userSchema.methods.clearCart = function () {
 }
 
 userSchema.methods.createResetToken = function () {
-    const token = require('crypto').randomBytes(32).toString('hex');
-    this.resetToken = token;
-    this.resetTokenExpiration = Date.now() + 24 * 60 * 60 * 1000;
+    this.resetToken = require('crypto').randomBytes(32).toString('hex');
+    this.resetTokenExpiration = Date.now() + 60 * 60 * 1000;
     return this.save();
 }
 
@@ -90,6 +100,20 @@ userSchema.methods.changePassword = function (password) {
     this.resetToken = null;
     this.resetTokenExpiration = null;
     return this.save();
+}
+
+userSchema.methods.createEmailValidateToken = function () {
+    this.emailValidateToken = require('crypto').randomBytes(32).toString('hex');
+    this.emailValidateTokenExpiration = Date.now() + 60 * 60 * 1000;
+    return this.save();
+}
+
+userSchema.methods.validateEmail = function () {
+    this.emailValidated = true;
+    this.emailValidateToken = null;
+    this.emailValidateTokenExpiration = null;
+    return this.save();
+
 }
 
 module.exports = mongoose.model('User', userSchema);

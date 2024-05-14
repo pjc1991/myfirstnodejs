@@ -1,0 +1,14 @@
+<%- include('../includes/header.ejs') %>
+</head>
+
+<body class="bg-gray-100">
+    <%- include('../includes/navigation.ejs') %>
+    <main class="max-w-md mx-auto mt-10">
+        <div class="bg-white p-5 rounded-lg shadow-lg">
+            <h1 class="text-2xl font-semibold text-center">The email verification link has been sent!</h1>
+            <p class="text-center mt-2">Please check your email to verify your account.</p>
+        </div>
+    </main>
+
+<%- include('../includes/modal.ejs', { message:message }) %>
+<%- include('../includes/footer.ejs') %>

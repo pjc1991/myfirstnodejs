@@ -5,13 +5,8 @@ const {validationResult} = require('express-validator');
 
 exports.getLogin = (req, res, next) => {
     res.render('auth/login', {
-        pageTitle: 'Login',
-        path: '/login',
-        message: req.flash('message'),
-        errors: [],
-        input: {
-            email: "",
-            password: ""
+        pageTitle: 'Login', path: '/login', message: req.flash('message'), errors: [], input: {
+            email: "", password: ""
         }
     });
 }
@@ -22,56 +17,49 @@ exports.postLogin = (req, res, next) => {
 
     if (!errors.isEmpty()) {
         return res.status(422).render('auth/login', {
-            pageTitle: 'Login',
-            path: '/login',
-            message: errors.array()[0].msg,
-            errors: errors.array(),
-            input: {
-                email: req.body.email,
-                password: req.body.password
+            pageTitle: 'Login', path: '/login', message: errors.array()[0].msg, errors: errors.array(), input: {
+                email: req.body.email, password: req.body.password
             }
         });
     }
 
     User.findOne({email: req.body.email})
         .then(user => {
-        if (!user) {
-            return res.status(422).render('auth/login', {
-                pageTitle: 'Login',
-                path: '/login',
-                message: "Invalid email or password",
-                errors: [],
-                input: {
-                    email: req.body.email,
-                    password: req.body.password
-                }
-            });
-        }
+            if (!user) {
+                return res.status(422).render('auth/login', {
+                    pageTitle: 'Login', path: '/login', message: "Invalid email or password", errors: [], input: {
+                        email: req.body.email, password: req.body.password
+                    }
+                });
+            }
 
-        bcrypt
-            .compare(req.body.password, user.password)
-            .then(doMatch => {
-                if (!doMatch) {
-                    return res.status(422).render('auth/login', {
-                        pageTitle: 'Login',
-                        path: '/login',
-                        message: "Invalid email or password",
-                        errors: [],
-                        input: {
-                            email: req.body.email,
-                            password: req.body.password
-                        }
-                    });
-                }
+            bcrypt
+                .compare(req.body.password, user.password)
+                .then(doMatch => {
+                    if (!user.emailValidated) {
+                        return res.redirect('/email-verification-resend?email=' + user.email);
+                    }
 
-                req.session.user = user;
-                req.session.isLoggedIn = true;
-                req.session.save((err) => {
-                    if (err) throw new Error(err);
-                    res.redirect('/');
+                    if (!doMatch) {
+                        return res.status(422).render('auth/login', {
+                            pageTitle: 'Login',
+                            path: '/login',
+                            message: "Invalid email or password",
+                            errors: [],
+                            input: {
+                                email: req.body.email, password: req.body.password
+                            }
+                        });
+                    }
+
+                    req.session.user = user;
+                    req.session.isLoggedIn = true;
+                    req.session.save((err) => {
+                        if (err) throw new Error(err);
+                        res.redirect('/');
+                    })
                 })
-            })
-    })
+        })
         .catch(err => {
             const error = new Error(err);
             error.httpStatusCode = 500;
@@ -87,54 +75,43 @@ exports.postLogout = (req, res, next) => {
 
 exports.getSignup = (req, res, next) => {
     res.render('auth/signup', {
-        pageTitle: 'Signup',
-        path: '/signup',
-        message: req.flash('message'),
-        input: {
-            email: "",
-            password: "",
-            password2: ""
-        },
-        errors: []
+        pageTitle: 'Signup', path: '/signup', message: req.flash('message'), input: {
+            email: "", password: "", password2: ""
+        }, errors: []
     });
 }
 
 exports.postSignup = (req, res, next) => {
-
     const errors = validationResult(req);
-
     if (!errors.isEmpty()) {
         console.log(errors.array());
         return res.status(422).render('auth/signup', {
-            pageTitle: 'Signup',
-            path: '/signup',
-            message: errors.array()[0].msg,
-            input: {
-                email: req.body.email,
-                password: req.body.password,
-                password2: req.body.password2
-            },
-            errors: errors.array()
+            pageTitle: 'Signup', path: '/signup', message: errors.array()[0].msg, input: {
+                email: req.body.email, password: req.body.password, password2: req.body.password2
+            }, errors: errors.array()
         });
     }
 
     const user = new User({
-        email: req.body.email,
-        password: bcrypt.hashSync(req.body.password, 12),
-        cart: {
+        email: req.body.email, password: bcrypt.hashSync(req.body.password, 12), cart: {
             items: []
         }
-    });
+    })
 
-    mailUtil.sendMail({
-        to: req.body.email,
-        subject: 'Signup successful',
-        html: '<h1>You successfully signed up!</h1>'
-    });
-
-    return user.save()
+    user.createEmailValidateToken()
         .then(result => {
-            res.redirect('/login');
+            mailUtil.sendMail({
+                to: req.body.email, subject: 'Signup successful', html:
+                    `<h1>Signup successful</h1>
+                    <p>Click this <a href="http://localhost:3000/email-verification/${user.emailValidateToken}">link</a> to verify your email</p>`
+
+            });
+
+            return user.save();
+
+        })
+        .then(result => {
+            res.redirect('/email-verification');
         })
         .catch(err => {
             const error = new Error(err);
@@ -146,9 +123,7 @@ exports.postSignup = (req, res, next) => {
 
 exports.getReset = (req, res, next) => {
     res.render('auth/reset', {
-        pageTitle: 'Reset Password',
-        path: '/reset',
-        message: req.flash('message')
+        pageTitle: 'Reset Password', path: '/reset', message: req.flash('message')
     });
 }
 
@@ -162,9 +137,7 @@ exports.postReset = (req, res, next) => {
 
             user.createResetToken();
             mailUtil.sendMail({
-                to: req.body.email,
-                subject: 'Password reset',
-                html: `<p>You requested a password reset</p>
+                to: req.body.email, subject: 'Password reset', html: `<p>You requested a password reset</p>
             <p>Click this <a href="http://localhost:3000/reset/${user.resetToken}">link</a> to set a new password</p>`
             });
 
@@ -217,6 +190,77 @@ exports.postNewPassword = (req, res, next) => {
             user.changePassword(password);
             req.flash('message', 'Password changed');
             res.redirect('/login');
+        })
+        .catch(err => {
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
+        });
+}
+
+exports.getEmailVerification = (req, res, next) => {
+    res.render('auth/email-verification', {
+        pageTitle: 'Email Verification',
+        path: '/email-verification',
+        message: req.flash('message')
+    });
+}
+
+exports.getEmailVerificationToken = (req, res, next) => {
+    const token = req.params.token;
+
+    User.findOne({emailValidateToken: token, emailValidateTokenExpiration: {$gt: Date.now()}})
+        .then(user => {
+            if (!user) {
+                req.flash('message', 'Invalid token');
+                return res.redirect('/email-verification');
+            }
+
+            user.validateEmail();
+
+            req.flash('message', 'Email verified');
+            res.redirect('/login');
+        })
+        .catch(err => {
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
+        });
+}
+
+exports.getEmailVerificationResend = (req, res, next) => {
+    const email = req.query.email;
+    res.render('auth/email-verification-failed', {
+        pageTitle: 'Email Verification Resend',
+        path: '/email-verification-resend',
+        message: req.flash('message'),
+        email: email
+    });
+}
+
+exports.postEmailVerificationResend = (req, res, next) => {
+    User.findOne({email: req.body.email})
+        .then(user => {
+            if (!user) {
+                req.flash('message', 'Email not found');
+                return res.redirect('/email-verification-resend');
+            }
+
+            if (user.emailValidated) {
+                req.flash('message', 'Email already verified');
+                return res.redirect('/email-verification-resend');
+            }
+
+            user.createEmailValidateToken();
+
+            mailUtil.sendMail({
+                to: req.body.email,
+                subject: 'Email verification',
+                html: `<p>Click this <a href="http://localhost:3000/email-verification/${user.emailValidateToken}">link</a> to verify your email</p>`
+            });
+
+            req.flash('message', 'Email verification email sent');
+            res.redirect('/email-verification-resend');
         })
         .catch(err => {
             const error = new Error(err);

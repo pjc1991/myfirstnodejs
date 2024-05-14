@@ -43,6 +43,8 @@ public/css/style.css
 
 # dotenv
 .env
+.env.development
+.env.production
 
 # uploadfiles
 uploadfiles

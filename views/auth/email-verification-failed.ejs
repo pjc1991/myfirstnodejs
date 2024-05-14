@@ -1,0 +1,23 @@
+<%- include('../includes/header.ejs') %>
+</head>
+
+<body class="bg-gray-100">
+    <%- include('../includes/navigation.ejs') %>
+    <main class="max-w-md mx-auto mt-10">
+        <div class="bg-white p-5 rounded-lg shadow-lg">
+            <h1 class="text-2xl font-semibold text-center">The email is not verified!</h1>
+            <p class="text-center mt-2">Please check your email to verify your account.</p>
+        </div>
+        <div class="mt-5 text-center">
+            <form action="/email-verification-resend" method="POST">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <input type="hidden" name="email" value="<%= email %>">
+                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    Resend Email Verification
+                </button>
+            </form>
+        </div>
+    </main>
+
+<%- include('../includes/modal.ejs', { message:message }) %>
+<%- include('../includes/footer.ejs') %>

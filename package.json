@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "nodemon": "nodemon app.js",
     "tailwind": "tailwindcss -i ./public/css/tailwindcss.css -o ./public/css/style.css --watch",
-    "start": "concurrently \"npm run nodemon\" \"npm run tailwind\"",
+    "start": "npm run nodemon",
     "start-docker-compose": "docker compose down && docker compose up --build",
     "dev": "concurrently \"npm run start-docker-compose\" \"npm run tailwind\"",
     "prod": "tailwindcss -i ./public/css/tailwindcss.css -o ./public/css/style.css && node app.js"

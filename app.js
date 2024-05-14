@@ -10,7 +10,10 @@ const {doubleCsrf} = require('csrf-csrf');
 const flash = require('connect-flash')
 const multer = require('multer');
 const moment = require('moment');
-const dotenv = require('dotenv').config();
+console.log("NODE_ENV",process.env.NODE_ENV);
+const dotenv = require('dotenv').config({
+    path: path.join(__dirname, `.env.${process.env.NODE_ENV}`)
+});
 
 const User = require('./models/user');
 
@@ -20,7 +23,7 @@ const authRoutes = require('./routes/auth');
 const errorsController = require('./controllers/errors');
 
 // constants
-const MONGO_URI = process.env.mongodb_uri;
+const MONGO_URI = process.env.MONGODB_URI;
 
 const app = express();
 
@@ -32,7 +35,7 @@ app.set('views', 'views');
 mongoose
     .connect(MONGO_URI)
     .then(result => {
-        app.listen(process.env.server_port);
+        app.listen(process.env.SERVER_PORT);
     })
     .catch(err => {
         console.log(err);
@@ -69,9 +72,9 @@ app.use(multer({
 // static files
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploadfiles', express.static(path.join(__dirname, 'uploadfiles')));
-session
+// session
 app.use(session({
-    secret: process.env.session_secret,
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
@@ -80,13 +83,13 @@ app.use(session({
 
 }));
 // cookie
-app.use(cookieParser(process.env.cookie_secret));
+app.use(cookieParser(process.env.COOKIE_SECRET));
 // csrf
 const {
     generatedToken,
     doubleCsrfProtection
 } = doubleCsrf({
-    getSecret: () => process.env.csrf_secret,
+    getSecret: () => process.env.CSRF_SECRET,
     cookieName: 'x-csrf-token',
     cookieOptions: {
         httpOnly: true,

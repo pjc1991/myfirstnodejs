@@ -24,10 +24,8 @@ exports.emailExistsValidation = (User) => exports.emailValidation()
         return User.findOne({email: email})
             .then(user => {
                 if (user) {
-                    return Promise.reject('The email exists already.');
+                    throw new Error('The email exists already.');
                 }
-                return Promise.resolve();
-            }).catch(err => {
-                console.log(err);
-            });
+                return true;
+            })
     }).withMessage('The email exists already.');

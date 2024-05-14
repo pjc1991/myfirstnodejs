@@ -34,4 +34,10 @@ router.post('/reset', authController.postReset);
 router.get('/reset/:token', authController.getNewPassword);
 router.post('/reset/:token', authController.postNewPassword);
 
+router.get('/email-verification', authController.getEmailVerification);
+router.get('/email-verification/:token', authController.getEmailVerificationToken);
+
+router.get('/email-verification-resend', authController.getEmailVerificationResend);
+router.post('/email-verification-resend', authController.postEmailVerificationResend);
+
 module.exports = router;

@@ -4,7 +4,6 @@ const fs = require('fs');
 const pageSize = 2;
 const pageRange = 2;
 
-const dotenv = require('dotenv').config();
 
 exports.getOrders = (req, res, next) => {
     const page = +req.query.page || 1;
@@ -58,7 +57,7 @@ exports.postOrder = (req, res, next) => {
 
             const paymentResponse = await fetch(
                 `https://api.portone.io/payments/${paymentId}`,
-                {headers: {Authorization: `PortOne ${process.env.portone_payment_secret}`}},
+                {headers: {Authorization: `PortOne ${process.env.PORTONE_PAYMENT_SECRET}`}},
             );
             if (!paymentResponse.ok) {
                 throw new Error(`Payment failed: ${paymentResponse.statusText}`);
