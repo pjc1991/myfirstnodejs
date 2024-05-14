@@ -32,7 +32,7 @@ app.set('views', 'views');
 mongoose
     .connect(MONGO_URI)
     .then(result => {
-        app.listen(3000);
+        app.listen(process.env.server_port);
     })
     .catch(err => {
         console.log(err);
