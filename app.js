@@ -10,6 +10,7 @@ const {doubleCsrf} = require('csrf-csrf');
 const flash = require('connect-flash')
 const multer = require('multer');
 const moment = require('moment');
+const dotenv = require('dotenv').config();
 
 const User = require('./models/user');
 
@@ -19,7 +20,7 @@ const authRoutes = require('./routes/auth');
 const errorsController = require('./controllers/errors');
 
 // constants
-const MONGO_URI = 'mongodb://mongo:27017/shop?retryWrites=true';
+const MONGO_URI = process.env.mongodb_uri;
 
 const app = express();
 
@@ -68,9 +69,9 @@ app.use(multer({
 // static files
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploadfiles', express.static(path.join(__dirname, 'uploadfiles')));
-// session
+session
 app.use(session({
-    secret: 'some secret key',
+    secret: process.env.session_secret,
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
@@ -79,13 +80,13 @@ app.use(session({
 
 }));
 // cookie
-app.use(cookieParser('cookie-secret-key'));
+app.use(cookieParser(process.env.cookie_secret));
 // csrf
 const {
     generatedToken,
     doubleCsrfProtection
 } = doubleCsrf({
-    getSecret: () => 'csrf-secret-key',
+    getSecret: () => process.env.csrf_secret,
     cookieName: 'x-csrf-token',
     cookieOptions: {
         httpOnly: true,
