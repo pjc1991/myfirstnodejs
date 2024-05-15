@@ -26,7 +26,7 @@ jobs:
         cache: 'npm'
     - run: npm ci
     - name: build tailwindcss
-      run : npm run tailwind
+      run : npm run tailwind-once
     - name: Deploy
       run: 
         cp -r $GITHUB_WORKSPACE/* /home/pjc1991/myfirstnodejs
