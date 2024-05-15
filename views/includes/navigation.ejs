@@ -1,26 +1,44 @@
-<div class="flex items-center justify-between px-4 py-3 bg-gray-700">
+<div class="flex items-center justify-between px-4 py-3 bg-orange-600 sticky top-0 z-50">
     <nav class="flex space-x-4 justify-between w-full">
-        <ul class="flex space-x-4 text-white">
-            <li><a href="/" class="<% if (path === '/') { %> text-orange-500 text-bold <% } %>">Shop</a></li>
-            <% if (isAuthenticated) { %>
-                <li><a href="/cart" class="<% if (path === '/cart') { %> text-orange-500 font-bold <% } %>">Cart</a></li>
-                <li><a href="/order" class="<% if (path === '/order') { %> text-orange-500 font-bold <% } %>">Orders</a></li>
-                <li><a href="/admin/product" class="<% if (path === '/admin/product') { %> text-orange-500 font-bold <% } %>">Products</a></li>
-                <li><a href="/admin/product/add-product" class="<% if (path === '/admin/product/add-product') { %> text-orange-500 font-bold <% } %>">Add Product</a></li>
-            <% } %>
+        <ul class="flex space-x-4">
+            <li>
+                <a href="/" class="">
+                    <img src="/svg/home.svg" alt="Home" class="w-6 h-6 <% if (path === '/') { %> invert <% } %>">
+                </a>
+            </li>
+            <li>
+                <form action="/product" method="GET" class="flex">
+                    <input type="text" name="productName" class="rounded-md p-2 h-6" placeholder="Search...">
+                    <img src="/svg/search.svg" alt="Search" class="mx-1 hover:invert" onclick="this.parentElement.submit()">
+                </form>
+            </li>
         </ul>
         <ul class="flex space-x-4 text-white">
             <% if (!isAuthenticated) { %>
-                <li><a href="/login" class="<% if (path === '/login') { %> text-orange-500 font-bold <% } %>">Login</a></li>
-                <li><a href="/signup" class="<% if (path === '/signup') { %> text-orange-500 font-bold <% } %>">Signup</a></li>
+                <li><a href="/login" class="">
+                        <img src="/svg/account-login.svg" alt="Login"
+                             class="w-6 h-6<% if (path === '/login') { %> invert <% } %>">
+                    </a>
+                </li>
             <% } %>
             <% if (isAuthenticated) { %>
+                <li><a href="/cart" class=">">
+                        <img src="/svg/cart.svg" alt="Cart" class="w-6 h-6<% if (path === '/cart') { %> invert <% } %>">
+                    </a></li>
+                <li><a href="/order" class="">
+                        <img src="/svg/document.svg" alt="Order"
+                             class="w-6 h-6 <% if (path === '/order') { %> invert <% } %>">
+                    </a>
+                </li>
                 <li>
                     <form action="/logout" method="POST">
                         <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                        <button type="submit">Logout</button>
+                        <button type="submit">
+                            <img src="/svg/account-logout.svg" alt="Logout" class="w-6 h-6">
+                        </button>
                     </form>
                 </li>
+
             <% } %>
         </ul>
     </nav>

@@ -6,6 +6,7 @@ const ordersController = require('../controllers/orders');
 const isAuth = require('../middleware/is-auth');
 
 router.get('/', shopController.getProducts);
+router.get('/product', shopController.getProductSearch);
 router.get('/product/:productId', shopController.getProduct);
 
 router.get('/cart', isAuth, cartController.getCart);
