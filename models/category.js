@@ -6,7 +6,7 @@ const categorySchema = new Schema({
         type: String,
         required: true
     },
-    user : {
+    userId : {
         type: Schema.Types.ObjectId,
         ref: 'User',
         required: true
@@ -16,3 +16,5 @@ const categorySchema = new Schema({
         default: Date.now
     }
 });
+
+module.exports = mongoose.model('Category', categorySchema);

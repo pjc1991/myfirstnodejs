@@ -1,6 +1,9 @@
 const {validationResult} = require('express-validator');
-const Product = require('../models/product');
 const fileUtil = require('../util/file');
+
+const Product = require('../models/product');
+const Category = require('../models/category');
+
 const pageSize = 2;
 const pageRange = 2;
 
@@ -10,6 +13,8 @@ exports.getAdminPage = (req, res, next) => {
         path: '/admin',
     });
 }
+
+// Product
 
 exports.getProducts = (req, res, next) => {
     const page = +req.query.page || 1;
@@ -46,6 +51,7 @@ exports.getAddProduct = (req, res, next) => {
         pageTitle: 'Add Product',
         path: '/admin/product/add-product',
         product: {},
+        categories: [],
         message: '',
         errors: [],
     });
@@ -64,6 +70,7 @@ exports.postAddProduct = (req, res, next) => {
                 price: req.body.price,
                 description: req.body.description,
             },
+            categories: [],
             message: errors.array()[0].msg,
             errors: errors.array(),
         });
@@ -127,6 +134,7 @@ exports.getEditProduct = (req, res, next) => {
                 pageTitle: 'Edit Product',
                 path: '/admin/product/edit-product',
                 message: '',
+                categories: [],
                 errors: [],
             });
         }).catch(err => {
@@ -186,3 +194,158 @@ exports.postEditProduct = (req, res, next) => {
             return next(error);
         });
 };
+
+// Category
+
+exports.getCategories = (req, res, next) => {
+    const page = +req.query.page || 1;
+    let totalPage;
+    Category.countDocuments()
+        .then(totalItems => {
+            totalPage = Math.ceil(totalItems / pageSize);
+            const offset = (page - 1) * pageSize;
+            return Category
+                .find()
+                .skip(offset)
+                .limit(pageSize);
+        })
+        .then(categories => {
+            res.render('admin/categories', {
+                categories: categories,
+                pageTitle: 'Admin Categories',
+                path: '/admin/category',
+                currentPage : page,
+                pageStart : Math.max(1, page - pageRange),
+                pageEnd : Math.min(totalPage, page + pageRange),
+                totalPage : totalPage,
+            });
+        })
+        .catch(err => {
+            console.log(err);
+        });
+}
+
+exports.getAddCategory = (req, res, next) => {
+    res.render('admin/edit-category', {
+        mode: 'add',
+        pageTitle: 'Add Category',
+        path: '/admin/category/add-category',
+        category: {},
+        message: '',
+        errors: [],
+    });
+}
+
+exports.postAddCategory = (req, res, next) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(422).render('admin/edit-category', {
+            mode: 'add',
+            pageTitle: 'Add Category',
+            path: '/admin/category/add-category',
+            category: {
+                name: req.body.name,
+            },
+            message: errors.array()[0].msg,
+            errors: errors.array(),
+        });
+    }
+
+    const category = new Category({
+        name: req.body.name,
+        userId: req.user,
+    });
+
+    category
+        .save()
+        .then(result => {
+            console.log('Category created!');
+            res.redirect('/admin/category');
+        })
+        .catch(err => {
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
+        });
+}
+
+exports.deleteCategory = (req, res, next) => {
+    Category.findById(req.params.categoryId)
+        .then(category => {
+            if (!category) {
+                return next(new Error('Category not found.'));
+            }
+            return Category.deleteOne({
+                _id: req.params.categoryId
+            });
+        })
+        .then(result => {
+            res.status(200).json({
+                message: "Successfully deleted category."
+            });
+        })
+        .catch(err => {
+            res.status(500).json({
+                message: 'Deleting category failed.'
+            });
+        });
+}
+
+exports.getEditCategory = (req, res, next) => {
+    Category.findById(req.params.categoryId)
+        .then(category => {
+            res.render('admin/edit-category', {
+                category: category,
+                mode: 'edit',
+                pageTitle: 'Edit Category',
+                path: '/admin/category/edit-category',
+                message: '',
+                errors: [],
+            });
+        }).catch(err => {
+        const error = new Error(err);
+        error.httpStatusCode = 500;
+        return next(error);
+    });
+}
+
+exports.postEditCategory = (req, res, next) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return Category.findById(req.params.categoryId)
+            .then(category => {
+                res.status(422).render('admin/edit-category', {
+                    category: {
+                        name: req.body.name,
+                        _id: req.params.categoryId,
+                    },
+                    mode: 'edit',
+                    pageTitle: 'Edit Category',
+                    path: '/admin/category/edit-category',
+                    message: errors.array()[0].msg,
+                    errors: errors.array(),
+                });
+            }).catch(err => {
+                const error = new Error(err);
+                error.httpStatusCode = 500;
+                return next(error);
+            });
+    }
+
+    Category
+        .findById(req.params.categoryId)
+        .then(category => {
+            category.name = req.body.name;
+            return category.save().then(result => {
+                console.log('Category updated!');
+                res.redirect('/admin/category');
+            });
+        })
+        .catch(err => {
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
+        });
+}

@@ -1,0 +1,24 @@
+<%- include('../includes/header.ejs') %>
+    <link rel="stylesheet" href="/css/style.css">
+    </head>
+
+    <body class="bg-gray-100 min-h-screen">
+        <%- include('../includes/admin-navigation.ejs') %>
+            <main class="container mx-auto px-4">
+                <form action="" method="post" enctype="multipart/form-data"
+                    class="max-w-md mx-auto bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 mt-4">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <input type="text" name="name" id="name" placeholder="Name"
+                        class="w-full mb-4 p-2 border border-gray-300 rounded <%= errors.find(e => e.path === 'title') ? 'border-red-500' : '' %>"
+                        value="<%= category.name %>">
+                    <% if (mode==='edit' ) { %>
+                        <input type="hidden" name="categoryId" value="<%= category._id %>">
+                    <% } %>
+                    <button type="submit"
+                        class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Save
+                        Category</button>
+                </form>
+            </main>
+
+            <%- include('../includes/modal.ejs', { message: message }) %>
+                <%- include('../includes/footer.ejs') %>
