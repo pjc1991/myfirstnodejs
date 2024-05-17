@@ -1,5 +1,5 @@
-const Product = require('../models/product');
 const {validationResult} = require('express-validator');
+const Product = require('../models/product');
 const fileUtil = require('../util/file');
 const pageSize = 2;
 const pageRange = 2;
@@ -19,7 +19,7 @@ exports.getProducts = (req, res, next) => {
             totalPage = Math.ceil(totalItems / pageSize);
             const offset = (page - 1) * pageSize;
             return Product
-                .find({userId: req.user._id})
+                .find()
                 .skip(offset)
                 .limit(pageSize);
         })
@@ -101,8 +101,7 @@ exports.deleteProduct = (req, res, next) => {
             }
             filePath = product.image;
             return Product.deleteOne({
-                _id: req.params.productId,
-                userId: req.user._id
+                _id: req.params.productId
             });
         })
         .then(result => {
@@ -166,10 +165,6 @@ exports.postEditProduct = (req, res, next) => {
     Product
         .findById(req.params.productId)
         .then(product => {
-
-            if (product.userId.toString() !== req.user._id.toString()) {
-                return res.redirect('/');
-            }
 
             product.title = req.body.title;
             product.price = req.body.price;
