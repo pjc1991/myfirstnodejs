@@ -8,12 +8,16 @@
             </li>
             <li>
                 <a href="/admin/product" class="">
-                    <span class="text-white">Product</span>
+                    <span class="text-white <% if (path === '/admin/product') { %> font-bold <% } %>">
+                        Product
+                    </span>
                 </a>
             </li>
             <li>
                 <a href="/admin/category" class="">
-                    <span class="text-white">Category</span>
+                    <span class="text-white <% if (path === '/admin/category') { %> font-bold <% } %>">
+                        Category
+                    </span>
                 </a>
             </li>
         </ul>
