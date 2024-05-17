@@ -3,7 +3,7 @@
     </head>
 
     <body class="bg-gray-100 min-h-screen">
-        <%- include('../includes/navigation.ejs') %>
+        <%- include('../includes/admin-navigation.ejs') %>
             <main class="container mx-auto px-4">
                 <form action="" method="post" enctype="multipart/form-data"
                     class="max-w-md mx-auto bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 mt-4">
@@ -17,6 +17,14 @@
                     <input type="text" name="price" id="price" placeholder="Price"
                         class="w-full mb-4 p-2 border border-gray-300 rounded <%= errors.find(e => e.path === 'price') ? 'border-red-500' : '' %>"
                         value="<%= product.price %>">
+                    <select name="category" id="category" class="w-full mb-4 p-2 border border-gray-300 rounded">
+                        <option value="">Select Category</option>
+                        <% categories.forEach(category => { %>
+                            <option value="<%= category._id %>" <%= product.category === category._id ? 'selected' : '' %>>
+                                <%= category.title %>
+                            </option>
+                            <% }) %>
+                    </select>
                     <textarea name="description" id="description" placeholder="Description"
                         class="w-full mb-4 p-2 border border-gray-300 rounded <%= errors.find(e => e.path === 'description') ? 'border-red-500' : '' %>"><%= product.description %></textarea>
                     <% if (mode==='edit' ) { %>
