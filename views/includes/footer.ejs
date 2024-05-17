@@ -4,10 +4,17 @@
             <div class="mx-4 text-right w-1/2 text-sm text-gray-300">
                 <h1 class="text-2xl font-bold">Shop is open!</h1>
                 <p class="text-sm">© 2024 Shop is open! All rights reserved.</p>
+                <% if (path.indexOf('/admin') === -1) { %>
                 <a href="/admin" class="text-white hover:text-gray-300 inline-flex">
                     <img src="/svg/admin.svg" alt="Admin" class="w-6 h-6 mx-2 invert">
                     <p>Admin</p>
                 </a>
+                <% } else { %>
+                <a href="/" class="text-white hover:text-gray-300 inline-flex">
+                    <img src="/svg/home.svg" alt="Shop" class="w-6 h-6 mx-2 invert">
+                    <p>Shop</p>
+                </a>
+                <% } %>
             </div>
             <ul>
                 <li>
