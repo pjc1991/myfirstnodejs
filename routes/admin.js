@@ -1,53 +1,32 @@
 const express = require('express');
-const multer = require('multer');
 const adminController = require('../controllers/admin');
 
 const router = express.Router();
 
-const isAuth = require('../middleware/is-auth');
 const isAdmin = require('../middleware/is-admin');
 
 const { 
     titleValidation,
-    imageURLValidation,
     priceValidation,
     descriptionValidation,
     productExistsValidation,
     imageFileValidation,
 } = require('../validator/product');
 
-// multer
-const fileStorage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, path.join('uploadfiles', 'images'));
-    },
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + '-' + file.originalname);
-    }
-});
 
-const fileFilter = (req, file, cb) => {
-    if (file.mimetype !== 'image/png' && file.mimetype !== 'image/jpg' && file.mimetype !== 'image/jpeg') {
-        return cb(null, false);
-    }
-
-    cb(null, true);
-}
 
 router.use(isAdmin);
 
 router.get('/', adminController.getAdminPage);
+
+
+// Product
 
 router.get('/product', adminController.getProducts);
 
 router.get('/product/add-product', adminController.getAddProduct);
 
 router.post('/product/add-product',
-    multer({
-        storage: fileStorage,
-        fileFilter: fileFilter,
-    })
-        .single('image'),
     titleValidation(),
     imageFileValidation(),
     priceValidation(),
@@ -61,16 +40,25 @@ router.delete('/product/:productId', adminController.deleteProduct);
 router.get('/product/:productId', adminController.getEditProduct);
 
 router.post('/product/:productId',
-    multer({
-        storage: fileStorage,
-        fileFilter: fileFilter,
-    })
-        .single('image'),
     titleValidation(),
     imageFileValidation(),
     priceValidation(),
     descriptionValidation(),
     productExistsValidation(),
     adminController.postEditProduct);
+
+// Category
+
+router.get('/category', adminController.getCategories);
+
+router.get('/category/add-category', adminController.getAddCategory);
+
+router.post('/category/add-category', adminController.postAddCategory);
+
+router.delete('/category/:categoryId', adminController.deleteCategory);
+
+router.get('/category/:categoryId', adminController.getEditCategory);
+
+router.post('/category/:categoryId', adminController.postEditCategory);
 
 module.exports = router;

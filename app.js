@@ -9,10 +9,10 @@ const cookieParser = require('cookie-parser');
 const {doubleCsrf} = require('csrf-csrf');
 const flash = require('connect-flash')
 const moment = require('moment');
-console.log("NODE_ENV",process.env.NODE_ENV);
 const dotenv = require('dotenv').config({
     path: path.join(__dirname, `.env.${process.env.NODE_ENV}`)
 });
+const multer = require('multer');
 
 const User = require('./models/user');
 
@@ -45,7 +45,30 @@ mongoose
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.json());
 
+// multer
+const fileStorage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, path.join('uploadfiles', 'images'));
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + '-' + file.originalname);
+    }
+});
 
+const fileFilter = (req, file, cb) => {
+    if (file.mimetype !== 'image/png' && file.mimetype !== 'image/jpg' && file.mimetype !== 'image/jpeg') {
+        return cb(null, false);
+    }
+
+    cb(null, true);
+}
+
+const upload =     multer({
+        storage: fileStorage,
+        fileFilter: fileFilter,
+    }).single('image');
+
+app.use(upload);
 // static files
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploadfiles', express.static(path.join(__dirname, 'uploadfiles')));
