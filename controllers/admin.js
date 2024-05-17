@@ -4,6 +4,13 @@ const fileUtil = require('../util/file');
 const pageSize = 2;
 const pageRange = 2;
 
+exports.getAdminPage = (req, res, next) => {
+    res.render('admin/home', {
+        pageTitle: 'Admin Page',
+        path: '/admin',
+    });
+}
+
 exports.getProducts = (req, res, next) => {
     const page = +req.query.page || 1;
     let totalPage;

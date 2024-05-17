@@ -5,6 +5,7 @@ const adminController = require('../controllers/admin');
 const router = express.Router();
 
 const isAuth = require('../middleware/is-auth');
+const isAdmin = require('../middleware/is-admin');
 
 const { 
     titleValidation,
@@ -15,13 +16,15 @@ const {
     imageFileValidation,
 } = require('../validator/product');
 
+router.use(isAdmin);
 
-router.get('/product', isAuth, adminController.getProducts);
+router.get('/', adminController.getAdminPage);
 
-router.get('/product/add-product', isAuth, adminController.getAddProduct);
+router.get('/product', adminController.getProducts);
+
+router.get('/product/add-product', adminController.getAddProduct);
 
 router.post('/product/add-product',
-    isAuth, 
     titleValidation(),
     imageFileValidation(),
     priceValidation(),
@@ -30,12 +33,11 @@ router.post('/product/add-product',
     adminController.postAddProduct
 );
 
-router.delete('/product/:productId', isAuth, adminController.deleteProduct);
+router.delete('/product/:productId', adminController.deleteProduct);
 
-router.get('/product/:productId', isAuth, adminController.getEditProduct);
+router.get('/product/:productId', adminController.getEditProduct);
 
 router.post('/product/:productId',
-    isAuth, 
     titleValidation(),
     imageFileValidation(),
     priceValidation(),
