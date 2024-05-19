@@ -20,7 +20,7 @@
                     <select name="categoryId" id="categoryId" class="w-full mb-4 p-2 border border-gray-300 rounded">
                         <option value="">Select Category</option>
                         <% categories.forEach(category => { %>
-                            <option value="<%= category._id %>" <%= (product.category != null && product.category.categoryId.toString() === category._id.toString()) ? 'selected' : '' %>>
+                            <option value="<%= category._id %>" <%= (!product.category && product.category.categoryId.toString() === category._id.toString()) ? 'selected' : '' %>>
                                 <%= category.name %>
                             </option>
                             <% }) %>
