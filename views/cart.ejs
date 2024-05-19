@@ -17,13 +17,13 @@
                                 <form action="/cart-delete" method="POST" class="mt-4">
                                     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                                     <input type="hidden" name="productId" value="<%= item.productId._id %>">
-                                    <button class="text-red-500 hover:text-white bg-transparent border border-red-500 hover:bg-red-500 px-4 py-2 rounded" type="submit">Remove from Cart</button>
+                                    <button class="text-gray-500 hover:text-white bg-transparent border border-gray-500 hover:bg-gray-500 px-4 py-2 rounded" type="submit">Remove from Cart</button>
                                 </form>
                             </div>
                         <% } %>
                     </div>
                     <div class="flex justify-center">
-                            <a href="/cart/checkout" class="bg-blue-500 text-white px-4 py-2 rounded" type="submit">Order Now</a>
+                            <a href="/cart/checkout" class="text-orange-500 hover:text-white bg-white border border-orange-500 hover:bg-orange-600 px-4 py-2 rounded" type="submit">Order Now</a>
                     </div>
 
                 <% } else { %>
