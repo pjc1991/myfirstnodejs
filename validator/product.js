@@ -13,7 +13,7 @@ exports.titleValidation = () =>
 exports.imageFileValidation = () =>
     check('image')
         .custom((value, { req }) => {
-            if (!req.file) {
+            if (!req.file && !req.body.productId) {
                 throw new Error('Image is required');
             }
             return true;

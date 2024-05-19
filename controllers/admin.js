@@ -375,9 +375,16 @@ exports.postEditCategory = (req, res, next) => {
                 res.redirect('/admin/category');
             });
         })
-        .catch(err => {
-            const error = new Error(err);
-            error.httpStatusCode = 500;
-            return next(error);
-        });
+        .then(result => {
+            Product.updateMany(
+                {'category.categoryId': req.params.categoryId},
+                {$set: {'category.categoryName': req.body.name}})
+                .then(result => {
+                console.log('Category updated in products!');
+            });
+        }).catch(err => {
+        const error = new Error(err);
+        error.httpStatusCode = 500;
+        return next(error);
+    });
 }
