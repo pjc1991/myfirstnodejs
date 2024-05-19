@@ -4,7 +4,7 @@ const fileUtil = require('../util/file');
 const Product = require('../models/product');
 const Category = require('../models/category');
 
-const pageSize = 2;
+const pageSize = 6;
 const pageRange = 2;
 
 exports.getAdminPage = (req, res, next) => {
@@ -33,10 +33,10 @@ exports.getProducts = (req, res, next) => {
                 products: products,
                 pageTitle: 'Admin Products',
                 path: '/admin/product',
-                currentPage : page,
-                pageStart : Math.max(1, page - pageRange),
-                pageEnd : Math.min(totalPage, page + pageRange),
-                totalPage : totalPage,
+                currentPage: page,
+                pageStart: Math.max(1, page - pageRange),
+                pageEnd: Math.min(totalPage, page + pageRange),
+                totalPage: totalPage,
             });
         })
         .catch(err => {
@@ -45,22 +45,25 @@ exports.getProducts = (req, res, next) => {
 }
 
 
-exports.getAddProduct = (req, res, next) => {
+exports.getAddProduct = async (req, res, next) => {
+    const categories = await Category.find();
     res.render('admin/edit-product', {
         mode: 'add',
         pageTitle: 'Add Product',
         path: '/admin/product/add-product',
         product: {},
-        categories: [],
+        categories: categories,
         message: '',
         errors: [],
     });
 };
 
-exports.postAddProduct = (req, res, next) => {
+exports.postAddProduct = async (req, res, next) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
+        const categories = await Category.find();
+
         return res.status(422).render('admin/edit-product', {
             mode: 'add',
             pageTitle: 'Add Product',
@@ -69,24 +72,35 @@ exports.postAddProduct = (req, res, next) => {
                 title: req.body.title,
                 price: req.body.price,
                 description: req.body.description,
+                category: {
+                    categoryId: {
+                        _id: req.body.categoryId,
+                    },
+                    categoryName: req.body.categoryName,
+                }
             },
-            categories: [],
+            categories: categories,
             message: errors.array()[0].msg,
             errors: errors.array(),
         });
     }
 
+    console.log(req.body);
+    Category.findById(req.body.categoryId)
+        .then(category => {
 
-    const product = new Product({
-        title: req.body.title,
-        price: req.body.price,
-        image: req.file.path,
-        description: req.body.description,
-        userId: req.user,
-    });
-
-    product
-        .save()
+            return new Product({
+                title: req.body.title,
+                price: req.body.price,
+                image: req.file.path,
+                description: req.body.description,
+                userId: req.user,
+                category: {
+                    categoryId: category._id,
+                    categoryName: category.name,
+                },
+            }).save();
+        })
         .then(result => {
             console.log('Product created!');
             res.redirect('/admin/product');
@@ -125,7 +139,8 @@ exports.deleteProduct = (req, res, next) => {
 }
 
 
-exports.getEditProduct = (req, res, next) => {
+exports.getEditProduct = async (req, res, next) => {
+    const categories = await Category.find();
     Product.findById(req.params.productId)
         .then(product => {
             res.render('admin/edit-product', {
@@ -134,7 +149,7 @@ exports.getEditProduct = (req, res, next) => {
                 pageTitle: 'Edit Product',
                 path: '/admin/product/edit-product',
                 message: '',
-                categories: [],
+                categories: categories,
                 errors: [],
             });
         }).catch(err => {
@@ -144,10 +159,11 @@ exports.getEditProduct = (req, res, next) => {
     });
 };
 
-exports.postEditProduct = (req, res, next) => {
+exports.postEditProduct = async (req, res, next) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
+        const categories = await Category.find();
         return Product.findById(req.params.productId)
             .then(product => {
                 res.status(422).render('admin/edit-product', {
@@ -156,12 +172,15 @@ exports.postEditProduct = (req, res, next) => {
                         price: req.body.price,
                         description: req.body.description,
                         _id: req.params.productId,
+                        categoryId: req.body.categoryId,
+                        categoryName: req.body.categoryName,
                     },
                     mode: 'edit',
                     pageTitle: 'Edit Product',
                     path: '/admin/product/edit-product',
                     message: errors.array()[0].msg,
                     errors: errors.array(),
+                    categories: categories,
                 });
             }).catch(err => {
                 const error = new Error(err);
@@ -170,24 +189,37 @@ exports.postEditProduct = (req, res, next) => {
             });
     }
 
-    Product
-        .findById(req.params.productId)
-        .then(product => {
+    let fetchedCategory;
+    Category.findById(req.body.categoryId)
+        .then(category => {
+            fetchedCategory = category;
+            return Product
+                .findById(req.params.productId)
+                .then(product => {
 
-            product.title = req.body.title;
-            product.price = req.body.price;
-            product.description = req.body.description;
+                    product.title = req.body.title;
+                    product.price = req.body.price;
+                    product.description = req.body.description;
+                    product.category = {
+                        categoryId: {
+                            _id: fetchedCategory._id,
+                        },
+                        categoryName: fetchedCategory.name,
+                    }
 
-            if (req.file) {
-                fileUtil.deleteFile(product.image);
-                product.image = req.file.path;
-            }
+                    if (req.file) {
+                        fileUtil.deleteFile(product.image);
+                        product.image = req.file.path;
+                    }
 
-            return product.save().then(result => {
-                console.log('Product updated!');
-                res.redirect('/admin/product');
-            });
+                    return product.save();
+                });
         })
+        .then(result => {
+            console.log('Product updated!');
+            res.redirect('/admin/product');
+        })
+
         .catch(err => {
             const error = new Error(err);
             error.httpStatusCode = 500;
@@ -214,10 +246,10 @@ exports.getCategories = (req, res, next) => {
                 categories: categories,
                 pageTitle: 'Admin Categories',
                 path: '/admin/category',
-                currentPage : page,
-                pageStart : Math.max(1, page - pageRange),
-                pageEnd : Math.min(totalPage, page + pageRange),
-                totalPage : totalPage,
+                currentPage: page,
+                pageStart: Math.max(1, page - pageRange),
+                pageEnd: Math.min(totalPage, page + pageRange),
+                totalPage: totalPage,
             });
         })
         .catch(err => {

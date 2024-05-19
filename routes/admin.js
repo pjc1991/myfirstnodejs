@@ -11,6 +11,7 @@ const {
     descriptionValidation,
     productExistsValidation,
     imageFileValidation,
+    productValidation,
 } = require('../validator/product');
 
 
@@ -27,11 +28,7 @@ router.get('/product', adminController.getProducts);
 router.get('/product/add-product', adminController.getAddProduct);
 
 router.post('/product/add-product',
-    titleValidation(),
-    imageFileValidation(),
-    priceValidation(),
-    descriptionValidation(),
-    productExistsValidation(),
+    productValidation(),
     adminController.postAddProduct
 );
 
@@ -40,11 +37,7 @@ router.delete('/product/:productId', adminController.deleteProduct);
 router.get('/product/:productId', adminController.getEditProduct);
 
 router.post('/product/:productId',
-    titleValidation(),
-    imageFileValidation(),
-    priceValidation(),
-    descriptionValidation(),
-    productExistsValidation(),
+    productValidation(),
     adminController.postEditProduct);
 
 // Category

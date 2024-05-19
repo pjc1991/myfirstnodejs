@@ -1,5 +1,6 @@
 const { check, body } = require('express-validator');
 const Product = require('../models/product');
+const Category = require('../models/category');
 
 exports.titleValidation = () =>
     check('title')
@@ -8,14 +9,13 @@ exports.titleValidation = () =>
         .isLength({ min: 3 })
         .withMessage('Title must be at least 3 characters long');
 
-exports.imageURLValidation = () =>
-    check('imageUrl')
-        .isURL()
-        .withMessage('Image URL must be a valid URL');
 
 exports.imageFileValidation = () =>
     check('image')
         .custom((value, { req }) => {
+            if (!req.file) {
+                throw new Error('Image is required');
+            }
             return true;
         })
         .withMessage('Image must be a file');
@@ -40,3 +40,34 @@ exports.productExistsValidation = () =>
         }
         return true;
     }).withMessage('The product exists already.');
+
+exports.categorySelectionValidation = () =>
+    check('categoryId')
+    .custom(async (category, { req }) => {
+        if (!category) {
+            throw new Error('Please select a category.');
+        }
+        return true;
+    }).withMessage('Please select a category.');
+
+exports.categoryExistsValidation = () =>
+    check('categoryId')
+    .custom(async (categoryId, { req }) => {
+        const category = await Category.findOne({ _id: categoryId });
+        if (!category) {
+            throw new Error('The category does not exist.');
+        }
+        return true;
+    }).withMessage('The category does not exist.');
+
+exports.productValidation = () => {
+    return [
+        this.titleValidation(),
+        this.priceValidation(),
+        this.imageFileValidation(),
+        this.descriptionValidation(),
+        this.productExistsValidation(),
+        this.categorySelectionValidation(),
+        this.categoryExistsValidation()
+    ];
+}
