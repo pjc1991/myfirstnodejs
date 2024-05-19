@@ -17,11 +17,11 @@
                     <input type="text" name="price" id="price" placeholder="Price"
                         class="w-full mb-4 p-2 border border-gray-300 rounded <%= errors.find(e => e.path === 'price') ? 'border-red-500' : '' %>"
                         value="<%= product.price %>">
-                    <select name="category" id="category" class="w-full mb-4 p-2 border border-gray-300 rounded">
+                    <select name="categoryId" id="categoryId" class="w-full mb-4 p-2 border border-gray-300 rounded">
                         <option value="">Select Category</option>
                         <% categories.forEach(category => { %>
-                            <option value="<%= category._id %>" <%= product.category === category._id ? 'selected' : '' %>>
-                                <%= category.title %>
+                            <option value="<%= category._id %>" <%= (product.category != null && product.category.categoryId.toString() === category._id.toString()) ? 'selected' : '' %>>
+                                <%= category.name %>
                             </option>
                             <% }) %>
                     </select>
